@@ -1,4 +1,3 @@
-import puppeteer from "puppeteer";
 
 declare let vditorTest: any;
 
@@ -11,13 +10,13 @@ describe("use puppeteer to test methods", () => {
     const updateValue = "* [Vditor 使用指南](https://ld246.com/article/1549638745630?r=Vanessa)";
 
     beforeAll(async () => {
-        browser = await puppeteer.launch();
-        page = await browser.newPage();
-        await Promise.all([
-            page.coverage.startJSCoverage(),
-            page.coverage.startCSSCoverage(),
-        ]);
-        await page.goto("http://localhost:9000");
+        // browser = await puppeteer.launch();
+        // page = await browser.newPage();
+        // await Promise.all([
+        //     page.coverage.startJSCoverage(),
+        //     page.coverage.startCSSCoverage(),
+        // ]);
+        // await page.goto("http://localhost:9000");
     });
 
     it("method: getValue", async () => {
