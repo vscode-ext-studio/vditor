@@ -174,7 +174,7 @@ export class Options {
             name: "headings",
             tipPosition: "ne",
         }, {
-            hotkey: "⌘B",
+            hotkey: "⌘K",
             icon: '<svg><use xlink:href="#vditor-icon-bold"></use></svg>',
             name: "bold",
             prefix: "**",
@@ -195,7 +195,7 @@ export class Options {
             suffix: "~~",
             tipPosition: "ne",
         }, {
-            hotkey: "⌘K",
+            hotkey: "⌘U",
             icon: '<svg><use xlink:href="#vditor-icon-link"></use></svg>',
             name: "link",
             prefix: "[",
@@ -246,7 +246,7 @@ export class Options {
             prefix: "---",
             tipPosition: "n",
         }, {
-            hotkey: "⌘U",
+            hotkey: "⇧⌘U",
             icon: '<svg><use xlink:href="#vditor-icon-code"></use></svg>',
             name: "code",
             prefix: "```",
