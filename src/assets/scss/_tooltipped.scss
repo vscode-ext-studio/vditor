@@ -71,6 +71,14 @@
     animation-timing-function: ease-in;
   }
 
+  &--hover::before,
+  &:hover::before,
+  &:active::before,
+  &:focus::before
+  {
+    display: none !important;
+  }
+
   &__s::after,
   &__se::after,
   &__sw::after {
@@ -104,7 +112,7 @@
   &__nw::after {
     right: 50%;
     bottom: 100%;
-    margin-bottom: 5px
+    margin-bottom: -65px
   }
 
   &__n::before,
