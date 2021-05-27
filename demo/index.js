@@ -118,6 +118,7 @@ window.vditor = new Vditor('vditor', {
         },
       }],
   },
+  mode: 'wysiwyg',
   tab: '\t',
   upload: {
     accept: 'image/*,.mp3, .wav, .rar',

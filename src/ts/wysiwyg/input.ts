@@ -137,14 +137,18 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
         }
 
         log("SpinVditorDOM", html, "argument", vditor.options.debugger);
+
+        const oldHtml=html;
         html = vditor.lute.SpinVditorDOM(html);
         log("SpinVditorDOM", html, "result", vditor.options.debugger);
 
         if (isWYSIWYGElement) {
             blockElement.innerHTML = html;
         } else {
-            // TODO 此句导致tab后自动生成代码块
-            // blockElement.outerHTML = html;
+            // TODO 这里的判断条件是避免tab+其他字符会生成代码块的bug
+            if(!html.match(/vditor-wysiwyg__bloc/) || oldHtml.match(/```/)){
+                blockElement.outerHTML = html;
+            }
 
             if (footnoteElement) {
                 // 更新正文中的 tip
