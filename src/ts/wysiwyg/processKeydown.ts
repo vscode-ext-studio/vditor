@@ -22,6 +22,7 @@ import {matchHotKey} from "../util/hotKey";
 import {getEditorRange, getSelectPosition, setSelectionFocus} from "../util/selection";
 import {keydownToc} from "../util/toc";
 import {afterRenderEvent} from "./afterRenderEvent";
+import { moveDown, moveUp } from "./highlightToolbarWYSIWYG";
 import {nextIsCode} from "./inlineTag";
 import {removeHeading, setHeading} from "./setHeading";
 import {showCode} from "./showCode";
@@ -215,23 +216,13 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     }
 
     // 对有子工具栏的块上移
-    if (matchHotKey("⇧⌘U", event)) {
-        const itemElement: HTMLElement = vditor.wysiwyg.popover.querySelector('[data-type="up"]');
-        if (itemElement) {
-            itemElement.click();
-            event.preventDefault();
-            return true;
-        }
+    if (matchHotKey("^!i", event)) {
+        moveUp(range,vditor)
     }
 
     // 对有子工具栏的块下移
-    if (matchHotKey("⇧⌘D", event)) {
-        const itemElement: HTMLElement = vditor.wysiwyg.popover.querySelector('[data-type="down"]');
-        if (itemElement) {
-            itemElement.click();
-            event.preventDefault();
-            return true;
-        }
+    if (matchHotKey("^!j", event)) {
+        moveDown(range,vditor)
     }
 
     if (fixTab(vditor, range, event)) {

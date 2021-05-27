@@ -36,7 +36,8 @@ export class Hint {
             this.element.style.display = "none";
             clearTimeout(this.timeId);
         } else {
-            if (this.splitChar === ":") {
+            if (false) {
+            // if (this.splitChar === ":") {
                 const emojiHint = key === "" ? vditor.options.hint.emoji : vditor.lute.GetEmojis();
                 const matchEmojiData: IHintData[] = [];
                 Object.keys(emojiHint).forEach((keyName) => {

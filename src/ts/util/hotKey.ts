@@ -1,9 +1,13 @@
-import {isCtrl, isFirefox} from "./compatibility";
+import { isCtrl, isFirefox } from "./compatibility";
 
 // 是否匹配 ⇧⌘[] / ⌘[] / ⌥[] / ⌥⌘[] / ⇧Tab / []
 export const matchHotKey = (hotKey: string, event: KeyboardEvent) => {
     if (hotKey === "") {
         return false;
+    }
+
+    if (hotKey.match(/[\^!\+]/)) {
+        return matchHotkeyNew(hotKey, event);
     }
 
     // []
@@ -52,3 +56,18 @@ export const matchHotKey = (hotKey: string, event: KeyboardEvent) => {
     }
     return false;
 };
+
+function matchHotkeyNew(hotkey: string, event: KeyboardEvent) {
+
+    const matchAlt = hotkey.match(/!/) != null == event.altKey
+    const matchCtrl = hotkey.match(/\^/) != null == event.ctrlKey
+    const matchShifter = hotkey.match(/\+/) != null == event.shiftKey
+
+
+    if(matchAlt&&matchCtrl&&matchShifter){
+        return hotkey.match(new RegExp("[\\\^\!\\\+\]\+"+event.key))
+
+    }
+
+}
+
