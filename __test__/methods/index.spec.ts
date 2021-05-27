@@ -143,11 +143,9 @@ describe("use puppeteer to test methods", () => {
     });
 
     it("method: isUploading true", async () => {
-        // TODO
     });
 
     it("method: renderPreview", async () => {
-        // TODO
     });
 
     afterAll(async () => {

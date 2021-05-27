@@ -762,6 +762,7 @@ const genDown = (range: Range, element: HTMLElement, vditor: IVditor) => {
 };
 
 const genClose = (element: HTMLElement, vditor: IVditor) => {
+    return;
     const close = document.createElement("button");
     close.setAttribute("type", "button");
     close.setAttribute("data-type", "remove");
