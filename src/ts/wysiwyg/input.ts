@@ -143,7 +143,8 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
         if (isWYSIWYGElement) {
             blockElement.innerHTML = html;
         } else {
-            blockElement.outerHTML = html;
+            // TODO 此句导致tab后自动生成代码块
+            // blockElement.outerHTML = html;
 
             if (footnoteElement) {
                 // 更新正文中的 tip
