@@ -1,11 +1,11 @@
-import {Constants} from "../constants";
-import {i18n} from "../i18n";
-import {disableToolbar} from "../toolbar/setToolbar";
-import {enableToolbar} from "../toolbar/setToolbar";
-import {removeCurrentToolbar} from "../toolbar/setToolbar";
-import {setCurrentToolbar} from "../toolbar/setToolbar";
-import {isCtrl, updateHotkeyTip} from "../util/compatibility";
-import {scrollCenter} from "../util/editorCommonEvent";
+import { Constants } from "../constants";
+import { i18n } from "../i18n";
+import { disableToolbar } from "../toolbar/setToolbar";
+import { enableToolbar } from "../toolbar/setToolbar";
+import { removeCurrentToolbar } from "../toolbar/setToolbar";
+import { setCurrentToolbar } from "../toolbar/setToolbar";
+import { isCtrl, updateHotkeyTip } from "../util/compatibility";
+import { scrollCenter } from "../util/editorCommonEvent";
 import {
     deleteColumn,
     deleteRow,
@@ -19,11 +19,11 @@ import {
     hasClosestByClassName,
     hasClosestByMatchTag,
 } from "../util/hasClosest";
-import {hasClosestByHeadings, hasClosestByTag} from "../util/hasClosestByHeadings";
-import {processCodeRender} from "../util/processCode";
-import {getEditorRange, selectIsEditor, setRangeByWbr, setSelectionFocus} from "../util/selection";
-import {afterRenderEvent} from "./afterRenderEvent";
-import {removeBlockElement} from "./processKeydown";
+import { hasClosestByHeadings, hasClosestByTag } from "../util/hasClosestByHeadings";
+import { processCodeRender } from "../util/processCode";
+import { getEditorRange, selectIsEditor, setRangeByWbr, setSelectionFocus } from "../util/selection";
+import { afterRenderEvent } from "./afterRenderEvent";
+import { removeBlockElement } from "./processKeydown";
 
 export const highlightToolbarWYSIWYG = (vditor: IVditor) => {
     clearTimeout(vditor.wysiwyg.hlToolbarTimeoutId);
@@ -727,6 +727,7 @@ export const genLinkRefPopover = (vditor: IVditor, linkRefElement: HTMLElement) 
 };
 
 const genUp = (range: Range, element: HTMLElement, vditor: IVditor) => {
+    return;
     const previousElement = element.previousElementSibling;
     if (!previousElement || (!element.parentElement.isEqualNode(vditor.wysiwyg.element) && element.tagName !== "LI")) {
         return;
@@ -739,21 +740,14 @@ const genUp = (range: Range, element: HTMLElement, vditor: IVditor) => {
     upElement.innerHTML = '<svg><use xlink:href="#vditor-icon-up"></use></svg>';
     upElement.className = "vditor-icon vditor-tooltipped vditor-tooltipped__n";
     upElement.onclick = () => {
-        range.insertNode(document.createElement("wbr"));
-        previousElement.insertAdjacentElement("beforebegin", element);
-        setRangeByWbr(vditor.wysiwyg.element, range);
-        afterRenderEvent(vditor);
-        highlightToolbarWYSIWYG(vditor);
-        scrollCenter(vditor);
+        // moveUp(range, element, vditor);
     };
     vditor.wysiwyg.popover.insertAdjacentElement("beforeend", upElement);
 };
 
 const genDown = (range: Range, element: HTMLElement, vditor: IVditor) => {
-    const nextElement = element.nextElementSibling;
-    if (!nextElement || (!element.parentElement.isEqualNode(vditor.wysiwyg.element) && element.tagName !== "LI")) {
-        return;
-    }
+    return;
+
     const downElement = document.createElement("button");
     downElement.setAttribute("type", "button");
     downElement.setAttribute("data-type", "down");
@@ -762,12 +756,7 @@ const genDown = (range: Range, element: HTMLElement, vditor: IVditor) => {
     downElement.innerHTML = '<svg><use xlink:href="#vditor-icon-down"></use></svg>';
     downElement.className = "vditor-icon vditor-tooltipped vditor-tooltipped__n";
     downElement.onclick = () => {
-        range.insertNode(document.createElement("wbr"));
-        nextElement.insertAdjacentElement("afterend", element);
-        setRangeByWbr(vditor.wysiwyg.element, range);
-        afterRenderEvent(vditor);
-        highlightToolbarWYSIWYG(vditor);
-        scrollCenter(vditor);
+        // moveDown(range, element, vditor);
     };
     vditor.wysiwyg.popover.insertAdjacentElement("beforeend", downElement);
 };
@@ -792,7 +781,7 @@ const genClose = (element: HTMLElement, vditor: IVditor) => {
 };
 
 const linkHotkey = (vditor: IVditor, element: HTMLElement, event: KeyboardEvent,
-                    nextInputElement: HTMLInputElement) => {
+    nextInputElement: HTMLInputElement) => {
     if (event.isComposing) {
         return;
     }
@@ -951,3 +940,47 @@ export const genImagePopover = (event: Event, vditor: IVditor) => {
 
     setPopoverPosition(vditor, imgElement);
 };
+
+
+const tryGetElement = (range: Range): HTMLElement => {
+    const typeElement = range.startContainer as HTMLElement;
+
+    return hasClosestByTag(typeElement, "BLOCKQUOTE") as HTMLTableElement
+        || hasClosestByMatchTag(typeElement, "LI") as HTMLBaseElement
+        ||hasClosestByMatchTag(typeElement, "TABLE") as HTMLTableElement
+        || hasClosestByClassName(typeElement, "vditor-wysiwyg__block") as HTMLElement
+        || hasClosestByHeadings(typeElement) as HTMLElement
+        ||  hasClosestByAttribute(typeElement, "data-block", "0") as HTMLElement
+        ;
+}
+
+export function moveDown(range: Range, vditor: IVditor) {
+    const element = tryGetElement(range);
+    const nextElement = element.nextElementSibling;
+    if (!nextElement || (!element.parentElement.isEqualNode(vditor.wysiwyg.element) && element.tagName !== "LI")) {
+        return;
+    }
+    range.insertNode(document.createElement("wbr"));
+    nextElement.insertAdjacentElement("afterend", element);
+    setRangeByWbr(vditor.wysiwyg.element, range);
+    afterRenderEvent(vditor);
+    highlightToolbarWYSIWYG(vditor);
+    scrollCenter(vditor);
+}
+
+export function moveUp(range: Range, vditor: IVditor) {
+    const element = tryGetElement(range);
+    console.log(element)
+    const previousElement = element.previousElementSibling;
+    console.log(previousElement)
+    if (!previousElement || (!element.parentElement.isEqualNode(vditor.wysiwyg.element) && element.tagName !== "LI")) {
+        return;
+    }
+    range.insertNode(document.createElement("wbr"));
+    previousElement.insertAdjacentElement("beforebegin", element);
+    setRangeByWbr(vditor.wysiwyg.element, range);
+    afterRenderEvent(vditor);
+    highlightToolbarWYSIWYG(vditor);
+    scrollCenter(vditor);
+}
+
