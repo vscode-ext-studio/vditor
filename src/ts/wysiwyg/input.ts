@@ -139,6 +139,24 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
         log("SpinVditorDOM", html, "argument", vditor.options.debugger);
 
         const oldHtml=html;
+        // TODO
+//         <ol data-tight="true" data-marker="1." data-block="0">
+//     <li data-marker="1.">sdfsdf</li>
+//     <li data-marker="2.">sdfsdfsdf
+//         <ol data-tight="true" data-marker="1." data-block="0">
+//             <li data-marker="1.">sdfsdf</li>
+//             <li data-marker="2.">​s<wbr></li>
+//         </ol>
+//     </li>
+// </ol>
+// TODO 这里要处理一下, 当li有子元素p的时候, 把他转为如上的ol
+// <ol data-tight="true" data-marker="1." data-block="0">
+//     <li data-marker="1.">sdfsdf</li>
+//     <li data-marker="2.">sdfsdfsdf
+//         <p data-block="0">​-<wbr></p>
+//     </li>
+// </ol>
+        console.log(oldHtml)
         html = vditor.lute.SpinVditorDOM(html);
         log("SpinVditorDOM", html, "result", vditor.options.debugger);
 
