@@ -164,7 +164,9 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
             blockElement.innerHTML = html;
         } else {
             // TODO 这里的判断条件是避免tab+其他字符会生成代码块的bug
-            if(!html.match(/vditor-wysiwyg__bloc/) || oldHtml.match(/```/)){
+            const isUnexceptCodeBlock=html.match(/vditor-wysiwyg__pre\b/) && !oldHtml.match(/```/);
+            // const isUnexceptCodeBlock=html.match(/vditor-wysiwyg__pre/) && !oldHtml.match(/```/);
+            if(!isUnexceptCodeBlock){
                 blockElement.outerHTML = html;
             }
 

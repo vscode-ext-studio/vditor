@@ -71,7 +71,8 @@ window.vditor = new Vditor('vditor', {
     },
     math: {
       engine: 'KaTeX',
-    },
+      "inlineDigit": true
+  }
   },
   toolbarConfig: {
     pin: true,
