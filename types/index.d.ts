@@ -513,6 +513,9 @@ interface IOptions {
     /** @link https://ld246.com/article/1549638745630#options-cache */
     cache?: {
         id?: string;
+        /**
+         * 就是在input事件后将文本保存到localStorage, Vditor初始化的时候看下是否有, 有就读取旧的数据
+         */
         enable?: boolean;
         after?(markdown: string): void;
     };
