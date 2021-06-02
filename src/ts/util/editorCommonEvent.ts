@@ -1,21 +1,21 @@
-import {Constants} from "../constants";
-import {processHeading} from "../ir/process";
-import {processKeydown as irProcessKeydown} from "../ir/processKeydown";
-import {getMarkdown} from "../markdown/getMarkdown";
-import {previewImage} from "../preview/image";
-import {processHeading as processHeadingSV} from "../sv/process";
-import {processKeydown as mdProcessKeydown} from "../sv/processKeydown";
-import {setEditMode} from "../toolbar/EditMode";
-import {hidePanel} from "../toolbar/setToolbar";
-import {afterRenderEvent} from "../wysiwyg/afterRenderEvent";
-import {processKeydown} from "../wysiwyg/processKeydown";
-import {removeHeading, setHeading} from "../wysiwyg/setHeading";
-import {getEventName, isCtrl} from "./compatibility";
-import {execAfterRender, paste} from "./fixBrowserBehavior";
-import {getSelectText} from "./getSelectText";
-import {hasClosestByAttribute, hasClosestByMatchTag} from "./hasClosest";
-import {matchHotKey} from "./hotKey";
-import {getCursorPosition, getEditorRange} from "./selection";
+import { Constants } from "../constants";
+import { processHeading } from "../ir/process";
+import { processKeydown as irProcessKeydown } from "../ir/processKeydown";
+import { getMarkdown } from "../markdown/getMarkdown";
+import { previewImage } from "../preview/image";
+import { processHeading as processHeadingSV } from "../sv/process";
+import { processKeydown as mdProcessKeydown } from "../sv/processKeydown";
+import { setEditMode } from "../toolbar/EditMode";
+import { hidePanel } from "../toolbar/setToolbar";
+import { afterRenderEvent, handlerHistoryEvent } from "../wysiwyg/afterRenderEvent";
+import { processKeydown } from "../wysiwyg/processKeydown";
+import { removeHeading, setHeading } from "../wysiwyg/setHeading";
+import { getEventName, isCtrl } from "./compatibility";
+import { execAfterRender, paste } from "./fixBrowserBehavior";
+import { getSelectText } from "./getSelectText";
+import { hasClosestByAttribute, hasClosestByMatchTag } from "./hasClosest";
+import { matchHotKey } from "./hotKey";
+import { getCursorPosition, getEditorRange } from "./selection";
 
 export const focusEvent = (vditor: IVditor, editorElement: HTMLElement) => {
     editorElement.addEventListener("focus", () => {
@@ -135,6 +135,9 @@ export const hotkeyEvent = (vditor: IVditor, editorElement: HTMLElement) => {
                 return;
             }
         }
+
+        if (handlerHistoryEvent(event,vditor))
+            return;
 
         if (vditor.options.ctrlEnter && matchHotKey("⌘Enter", event)) {
             vditor.options.ctrlEnter(getMarkdown(vditor));
