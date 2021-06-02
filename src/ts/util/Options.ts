@@ -6,7 +6,7 @@ export class Options {
     private defaultOptions: IOptions = {
         after: undefined,
         cache: {
-            enable: true,
+            enable: false,
         },
         cdn: Constants.CDN,
         classes: {
