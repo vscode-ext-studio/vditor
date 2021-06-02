@@ -128,6 +128,7 @@ export const hotkeyEvent = (vditor: IVditor, editorElement: HTMLElement) => {
             }
         } else if (vditor.currentMode === "wysiwyg") {
             if (processKeydown(vditor, event)) {
+                event.stopPropagation()
                 return;
             }
         } else if (vditor.currentMode === "ir") {
@@ -223,6 +224,7 @@ export const hotkeyEvent = (vditor: IVditor, editorElement: HTMLElement) => {
             if (matchHotKey(menuItem.hotkey, event)) {
                 vditor.toolbar.elements[menuItem.name].children[0].dispatchEvent(new CustomEvent(getEventName()));
                 event.preventDefault();
+                event.stopPropagation();
                 return true;
             }
         });
