@@ -5,7 +5,7 @@ import { matchHotkeyNew } from "../util/hotKey";
 
 export function handlerHistoryEvent(event: KeyboardEvent, vditor: IVditor,): boolean {
 
-    if (matchHotkeyNew("^s", event)) {
+    if (matchHotkeyNew("^s", event) || matchHotkeyNew("^x", event) || matchHotkeyNew("^v", event)) {
         clearTimeout(vditor.wysiwyg.afterRenderTimeoutId);
         recordHistory(vditor)
     }
