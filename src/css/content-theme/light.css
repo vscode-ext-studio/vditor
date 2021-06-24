@@ -55,6 +55,10 @@
     background-color: #fff
 }
 
+.vditor-reset .vditor-wysiwyg__preview code:not(.hljs):not(.highlight-chroma){
+    background-color: rgb(153 174 214 / 20%);
+}
+
 .vditor-reset code:not(.hljs):not(.highlight-chroma) {
     background-color: rgba(27, 31, 35, .05);
 }
