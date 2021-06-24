@@ -56,7 +56,7 @@
 }
 
 .vditor-reset .vditor-wysiwyg__preview code:not(.hljs):not(.highlight-chroma){
-    background-color: rgb(153 174 214 / 20%);
+    background-color: rgb(153 174 214 / 5%);
 }
 
 .vditor-reset code:not(.hljs):not(.highlight-chroma) {
