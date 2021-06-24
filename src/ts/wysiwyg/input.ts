@@ -2,13 +2,13 @@ import {
     getTopList,
     hasClosestBlock, hasClosestByAttribute, hasTopClosestByTag,
 } from "../util/hasClosest";
-import { hasClosestByTag} from "../util/hasClosestByHeadings";
-import {log} from "../util/log";
-import {processCodeRender} from "../util/processCode";
-import {setRangeByWbr} from "../util/selection";
-import {renderToc} from "../util/toc";
-import {afterRenderEvent} from "./afterRenderEvent";
-import {previoueIsEmptyA} from "./inlineTag";
+import { hasClosestByTag } from "../util/hasClosestByHeadings";
+import { log } from "../util/log";
+import { processCodeRender } from "../util/processCode";
+import { setRangeByWbr } from "../util/selection";
+import { renderToc } from "../util/toc";
+import { afterRenderEvent } from "./afterRenderEvent";
+import { previoueIsEmptyA } from "./inlineTag";
 
 export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
     let blockElement = hasClosestBlock(range.startContainer);
@@ -138,24 +138,24 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
 
         log("SpinVditorDOM", html, "argument", vditor.options.debugger);
 
-        const oldHtml=html;
+        const oldHtml = html;
         // TODO
-//         <ol data-tight="true" data-marker="1." data-block="0">
-//     <li data-marker="1.">sdfsdf</li>
-//     <li data-marker="2.">sdfsdfsdf
-//         <ol data-tight="true" data-marker="1." data-block="0">
-//             <li data-marker="1.">sdfsdf</li>
-//             <li data-marker="2.">​s<wbr></li>
-//         </ol>
-//     </li>
-// </ol>
-// TODO 这里要处理一下, 当li有子元素p的时候, 把他转为如上的ol
-// <ol data-tight="true" data-marker="1." data-block="0">
-//     <li data-marker="1.">sdfsdf</li>
-//     <li data-marker="2.">sdfsdfsdf
-//         <p data-block="0">​-<wbr></p>
-//     </li>
-// </ol>
+        //         <ol data-tight="true" data-marker="1." data-block="0">
+        //     <li data-marker="1.">sdfsdf</li>
+        //     <li data-marker="2.">sdfsdfsdf
+        //         <ol data-tight="true" data-marker="1." data-block="0">
+        //             <li data-marker="1.">sdfsdf</li>
+        //             <li data-marker="2.">​s<wbr></li>
+        //         </ol>
+        //     </li>
+        // </ol>
+        // TODO 这里要处理一下, 当li有子元素p的时候, 把他转为如上的ol
+        // <ol data-tight="true" data-marker="1." data-block="0">
+        //     <li data-marker="1.">sdfsdf</li>
+        //     <li data-marker="2.">sdfsdfsdf
+        //         <p data-block="0">​-<wbr></p>
+        //     </li>
+        // </ol>
         console.log(oldHtml)
         html = vditor.lute.SpinVditorDOM(html);
         log("SpinVditorDOM", html, "result", vditor.options.debugger);
@@ -164,10 +164,11 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
             blockElement.innerHTML = html;
         } else {
             // TODO 这里的判断条件是避免tab+其他字符会生成代码块的bug
-            const isUnexceptCodeBlock=html.match(/vditor-wysiwyg__pre\b/) && !oldHtml.match(/```/);
+            const isUnexceptCodeBlock = html.match(/vditor-wysiwyg__pre\b/) && !oldHtml.match(/```/);
             // const isUnexceptCodeBlock=html.match(/vditor-wysiwyg__pre/) && !oldHtml.match(/```/);
-            if(!isUnexceptCodeBlock){
-                blockElement.outerHTML = html;
+            if (!isUnexceptCodeBlock) {
+                // 防止创建图片后消失
+                blockElement.outerHTML = html.replace(`alt=""`, `alt="img"`);
             }
 
             if (footnoteElement) {
