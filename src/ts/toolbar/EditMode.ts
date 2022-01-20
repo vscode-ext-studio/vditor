@@ -173,6 +173,7 @@ export class EditMode extends MenuItem {
         panelElement.children.item(0).addEventListener(getEventName(), (event: Event) => {
             // wysiwyg
             setEditMode(vditor, "wysiwyg", event);
+            vditor.options.changeEditMode("wysiwyg")
             event.preventDefault();
             event.stopPropagation();
         });
@@ -180,6 +181,7 @@ export class EditMode extends MenuItem {
         panelElement.children.item(1).addEventListener(getEventName(), (event: Event) => {
             // ir
             setEditMode(vditor, "ir", event);
+            vditor.options.changeEditMode("ir")
             event.preventDefault();
             event.stopPropagation();
         });
@@ -187,6 +189,7 @@ export class EditMode extends MenuItem {
         panelElement.children.item(2).addEventListener(getEventName(), (event: Event) => {
             // markdown
             setEditMode(vditor, "sv", event);
+            vditor.options.changeEditMode("sv")
             event.preventDefault();
             event.stopPropagation();
         });

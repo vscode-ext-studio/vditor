@@ -25,6 +25,9 @@ export class CodeTheme extends MenuItem {
                 hidePanel(vditor, ["subToolbar"]);
                 vditor.options.preview.hljs.style = event.target.textContent;
                 setCodeTheme(event.target.textContent, vditor.options.cdn);
+                if(vditor.options.changeCodeTheme){
+                    vditor.options.changeCodeTheme(event.target.textContent)
+                }
                 event.preventDefault();
                 event.stopPropagation();
             }

@@ -562,6 +562,11 @@ interface IOptions {
     /** 输入后触发 */
     input?(value: string, previewElement?: HTMLElement): void;
 
+    /** 代码块主题修改后触发 */
+    changeCodeTheme?(value: string): void;
+
+    changeEditMode?(value: string): void;
+
     /** 聚焦后触发  */
     focus?(value: string): void;
 
