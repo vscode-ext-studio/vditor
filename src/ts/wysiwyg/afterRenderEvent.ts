@@ -41,7 +41,6 @@ function recordHistory(vditor: IVditor, options = { enableAddUndoStack: true, en
     }
 
     if (vditor.options.cache.enable && accessLocalStorage()) {
-        console.log('cache')
         localStorage.setItem(vditor.options.cache.id, text);
         if (vditor.options.cache.after) {
             vditor.options.cache.after(text);

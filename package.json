@@ -58,7 +58,7 @@
     "test:watch": "jest --watch",
     "test": "jest --coverage",
     "start": "webpack-dev-server --config webpack.start.js",
-    "build": "webpack"
+    "build": "webpack --progress"
   },
   "keywords": [
     "editor",
