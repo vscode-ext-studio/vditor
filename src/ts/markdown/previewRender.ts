@@ -1,6 +1,6 @@
 import {Constants} from "../constants";
 import {setContentTheme} from "../ui/setContentTheme";
-import {addScript} from "../util/addScript";
+import {addScript, addScriptSync} from "../util/addScript";
 import {hasClosestByClassName, hasClosestByMatchTag} from "../util/hasClosest";
 import {merge} from "../util/merge";
 import {abcRender} from "./abcRender";
@@ -24,7 +24,9 @@ const mergeOptions = (options?: IPreviewOptions) => {
         anchor: 0,
         cdn: Constants.CDN,
         customEmoji: {},
-        emojiPath: `${(options && options.emojiPath) || Constants.CDN}/dist/images/emoji`,
+        emojiPath: `${
+            (options && options.emojiPath) || Constants.CDN
+        }/dist/images/emoji`,
         hljs: Constants.HLJS_OPTIONS,
         icon: "ant",
         lang: "zh_CN",
@@ -81,11 +83,35 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
     }
     previewElement.innerHTML = html;
     previewElement.classList.add("vditor-reset");
+
+    if (!mergedOptions.i18n) {
+        if (!["en_US", "ja_JP", "ko_KR", "ru_RU", "zh_CN", "zh_TW"].includes(mergedOptions.lang)) {
+            throw new Error(
+                "options.lang error, see https://ld246.com/article/1549638745630#options",
+            );
+        } else {
+            const i18nScriptPrefix = "vditorI18nScript";
+            const i18nScriptID = i18nScriptPrefix + mergedOptions.lang;
+            document.querySelectorAll(`head script[id^="${i18nScriptPrefix}"]`).forEach((el) => {
+                if (el.id !== i18nScriptID) {
+                    document.head.removeChild(el);
+                }
+            });
+            await addScript(`${mergedOptions.cdn}/dist/js/i18n/${mergedOptions.lang}.js`, i18nScriptID);
+        }
+    } else {
+        window.VditorI18n = mergedOptions.i18n;
+    }
+
+    if (mergedOptions.icon) {
+        await addScript(`${mergedOptions.cdn}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
+    }
+
     setContentTheme(mergedOptions.theme.current, mergedOptions.theme.path);
     if (mergedOptions.anchor === 1) {
         previewElement.classList.add("vditor-reset--anchor");
     }
-    codeRender(previewElement, mergedOptions.lang);
+    codeRender(previewElement);
     highlightRender(mergedOptions.hljs, previewElement, mergedOptions.cdn);
     mathRender(previewElement, {
         cdn: mergedOptions.cdn,
@@ -100,7 +126,7 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
     abcRender(previewElement, mergedOptions.cdn);
     mediaRender(previewElement);
     if (mergedOptions.speech.enable) {
-        speechRender(previewElement, mergedOptions.lang);
+        speechRender(previewElement);
     }
     if (mergedOptions.anchor !== 0) {
         anchorRender(mergedOptions.anchor);
@@ -110,9 +136,6 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
     }
     if (mergedOptions.lazyLoadImage) {
         lazyLoadImageRender(previewElement);
-    }
-    if (mergedOptions.icon) {
-        addScript(`${mergedOptions.cdn}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
     }
     previewElement.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
         const spanElement = hasClosestByMatchTag(event.target, "SPAN");

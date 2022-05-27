@@ -1,7 +1,6 @@
-import {i18n} from "../i18n/index";
 import {code160to32} from "../util/code160to32";
 
-export const codeRender = (element: HTMLElement, lang: keyof II18n = "zh_CN") => {
+export const codeRender = (element: HTMLElement) => {
     element.querySelectorAll("pre > code").forEach((e: HTMLElement, index: number) => {
         if (e.parentElement.classList.contains("vditor-wysiwyg__pre") ||
             e.parentElement.classList.contains("vditor-ir__marker--pre")) {
@@ -11,7 +10,7 @@ export const codeRender = (element: HTMLElement, lang: keyof II18n = "zh_CN") =>
             e.classList.contains("language-echarts") || e.classList.contains("language-mindmap") ||
             e.classList.contains("language-plantuml") ||
             e.classList.contains("language-abc") || e.classList.contains("language-graphviz") ||
-            e.classList.contains("language-math") ) {
+            e.classList.contains("language-math")) {
             return;
         }
 
@@ -34,13 +33,17 @@ export const codeRender = (element: HTMLElement, lang: keyof II18n = "zh_CN") =>
             codeText = codeElement.innerText;
         }
 
+        let iconHTML = '<svg><use xlink:href="#vditor-icon-copy"></use></svg>';
+        if (!document.getElementById("vditorIconScript")) {
+            iconHTML = '<svg viewBox="0 0 32 32"><path d="M22.545-0h-17.455c-1.6 0-2.909 1.309-2.909 2.909v20.364h2.909v-20.364h17.455v-2.909zM26.909 5.818h-16c-1.6 0-2.909 1.309-2.909 2.909v20.364c0 1.6 1.309 2.909 2.909 2.909h16c1.6 0 2.909-1.309 2.909-2.909v-20.364c0-1.6-1.309-2.909-2.909-2.909zM26.909 29.091h-16v-20.364h16v20.364z"></path></svg>';
+        }
+
         const divElement = document.createElement("div");
         divElement.className = "vditor-copy";
-        divElement.innerHTML = `<span aria-label="${i18n[lang].copy}"
-onmouseover="this.setAttribute('aria-label', '${i18n[lang].copy}')"
+        divElement.innerHTML = `<span aria-label="${window.VditorI18n?.copy || "复制"}"
+onmouseover="this.setAttribute('aria-label', '${window.VditorI18n?.copy || "复制"}')"
 class="vditor-tooltipped vditor-tooltipped__w"
-onclick="this.previousElementSibling.select();document.execCommand('copy');` +
-            `this.setAttribute('aria-label', '${i18n[lang].copied}')"><svg><use xlink:href="#vditor-icon-copy"></use></svg></span>`;
+onclick="this.previousElementSibling.select();document.execCommand('copy');this.setAttribute('aria-label', '${window.VditorI18n?.copy || "已复制"}')">${iconHTML}</span>`;
         const textarea = document.createElement("textarea");
         textarea.value = code160to32(codeText);
         divElement.insertAdjacentElement("afterbegin", textarea);

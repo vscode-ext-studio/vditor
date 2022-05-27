@@ -14,7 +14,6 @@ const pkg = require('./package.json')
 
 module.exports = {
   mode: 'development',
-  watch: true,
   output: {
     filename: '[name]',
     path: path.resolve(__dirname, 'demo/dist'),
@@ -25,12 +24,12 @@ module.exports = {
     'comment.js': './demo/comment.js',
   },
   resolve: {
-    extensions: ['.js', '.ts', '.png', '.scss'],
+    extensions: ['.js', '.ts', '.png', '.less'],
   },
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: /\.less$/,
         include: [path.resolve(__dirname, 'src')],
         use: [
           {
@@ -45,14 +44,15 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              ident: 'postcss',
-              plugins: () => [
-                require('autoprefixer')({grid: true, remove: false}),
-              ],
+              postcssOptions: {
+                plugins: [
+                  ['autoprefixer', {grid: true, remove: false}],
+                ],
+              },
             },
           },
           {
-            loader: 'sass-loader', // compiles Sass to CSS
+            loader: 'less-loader', // compiles Less to CSS
           },
         ],
       },
@@ -127,15 +127,6 @@ module.exports = {
     contentBase: path.join(__dirname, '.'),
     port: 3000,
     host: '0.0.0.0',
-    before: (app) => {
-      app.get('/dist/js/lute/lute.wasm.br', function (req, res, next) {
-        res.set({
-          'Content-Encoding': 'br',
-          'Content-Type': 'application/wasm',
-        })
-        next()
-      })
-    },
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

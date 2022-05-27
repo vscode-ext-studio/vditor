@@ -1,9 +1,10 @@
-import {Constants} from "../constants";
-import {merge} from "./merge";
+import { Constants } from "../constants";
+import { merge } from "./merge";
 
 export class Options {
     public options: IOptions;
     private defaultOptions: IOptions = {
+        rtl: false,
         after: undefined,
         cache: {
             enable: false,
@@ -106,7 +107,8 @@ export class Options {
                     "info",
                     "help",
                 ],
-            }],
+            },
+        ],
         toolbarConfig: {
             hide: false,
             pin: false,
@@ -147,12 +149,18 @@ export class Options {
             if (this.options.comment) {
                 this.defaultOptions.comment = this.options.comment;
             }
+            // 支持不够完善，我先注释了，后期再打开
+            // if (this.options.rtl) {
+            //     this.defaultOptions.rtl = this.options.rtl;
+            // }
         }
 
         const mergedOptions = merge(this.defaultOptions, this.options);
 
         if (mergedOptions.cache.enable && !mergedOptions.cache.id) {
-            throw new Error("need options.cache.id, see https://ld246.com/article/1549638745630#options");
+            throw new Error(
+                "need options.cache.id, see https://ld246.com/article/1549638745630#options",
+            );
         }
 
         return mergedOptions;
@@ -353,10 +361,16 @@ export class Options {
         toolbar.forEach((menuItem: IMenuItem) => {
             let currentMenuItem = menuItem;
             toolbarItem.forEach((defaultMenuItem: IMenuItem) => {
-                if (typeof menuItem === "string" && defaultMenuItem.name === menuItem) {
+                if (
+                    typeof menuItem === "string" &&
+                    defaultMenuItem.name === menuItem
+                ) {
                     currentMenuItem = defaultMenuItem;
                 }
-                if (typeof menuItem === "object" && defaultMenuItem.name === menuItem.name) {
+                if (
+                    typeof menuItem === "object" &&
+                    defaultMenuItem.name === menuItem.name
+                ) {
                     currentMenuItem = Object.assign({}, defaultMenuItem, menuItem);
                 }
             });

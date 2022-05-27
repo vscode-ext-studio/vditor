@@ -22,7 +22,7 @@ export const focusEvent = (vditor: IVditor, editorElement: HTMLElement) => {
         if (vditor.options.focus) {
             vditor.options.focus(getMarkdown(vditor));
         }
-        hidePanel(vditor, ["subToolbar"]);
+        hidePanel(vditor, ["subToolbar", "hint"]);
     });
 };
 
@@ -62,7 +62,7 @@ export const dropEvent = (vditor: IVditor, editorElement: HTMLElement) => {
             if (event.dataTransfer.getData(Constants.DROP_EDITOR)) {
                 // 编辑器内选中文字拖拽
                 execAfterRender(vditor);
-            } else if (event.dataTransfer.types[0] === "Files" || event.dataTransfer.types.includes("text/html")) {
+            } else if (event.dataTransfer.types.includes("Files") || event.dataTransfer.types.includes("text/html")) {
                 // 外部文件拖入编辑器中或者编辑器内选中文字拖拽
                 paste(vditor, event, {
                     pasteCode: (code: string) => {
@@ -99,11 +99,11 @@ export const scrollCenter = (vditor: IVditor) => {
     }
     const editorElement = vditor[vditor.currentMode].element;
     const cursorTop = getCursorPosition(editorElement).top;
-    if (typeof vditor.options.height === "string" && !vditor.element.classList.contains("vditor--fullscreen")) {
+    if (vditor.options.height === "auto" && !vditor.element.classList.contains("vditor--fullscreen")) {
         window.scrollTo(window.scrollX,
             cursorTop + vditor.element.offsetTop + vditor.toolbar.element.offsetHeight - window.innerHeight / 2 + 10);
     }
-    if (typeof vditor.options.height === "number" || vditor.element.classList.contains("vditor--fullscreen")) {
+    if (vditor.options.height !== "auto" || vditor.element.classList.contains("vditor--fullscreen")) {
         editorElement.scrollTop = cursorTop + editorElement.scrollTop - editorElement.clientHeight / 2 + 10;
     }
 };

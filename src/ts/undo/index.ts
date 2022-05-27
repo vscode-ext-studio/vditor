@@ -1,4 +1,4 @@
-import DiffMatchPatch, {diff_match_patch, patch_obj} from "diff-match-patch";
+import * as DiffMatchPatch from "diff-match-patch";
 import {disableToolbar, enableToolbar, hidePanel} from "../toolbar/setToolbar";
 import {isFirefox, isSafari} from "../util/compatibility";
 import {scrollCenter} from "../util/editorCommonEvent";
@@ -6,17 +6,18 @@ import {execAfterRender} from "../util/fixBrowserBehavior";
 import {highlightToolbar} from "../util/highlightToolbar";
 import {processCodeRender} from "../util/processCode";
 import {setRangeByWbr, setSelectionFocus} from "../util/selection";
+import {renderToc} from "../util/toc";
 
 interface IUndo {
     hasUndo: boolean;
     lastText: string;
-    redoStack: patch_obj[][];
-    undoStack: patch_obj[][];
+    redoStack: DiffMatchPatch.patch_obj[][];
+    undoStack: DiffMatchPatch.patch_obj[][];
 }
 
 class Undo {
     private stackSize = 50;
-    private dmp: diff_match_patch;
+    private dmp: DiffMatchPatch.diff_match_patch;
     private wysiwyg: IUndo;
     private ir: IUndo;
     private sv: IUndo;
@@ -131,7 +132,7 @@ class Undo {
         }
     }
 
-    private renderDiff(state: patch_obj[], vditor: IVditor, isRedo: boolean = false) {
+    private renderDiff(state: DiffMatchPatch.patch_obj[], vditor: IVditor, isRedo: boolean = false) {
         let text;
         if (isRedo) {
             const redoPatchList = this.dmp.patch_deepCopy(state).reverse();
@@ -164,6 +165,8 @@ class Undo {
                 vditor[vditor.currentMode].element, vditor[vditor.currentMode].element.ownerDocument.createRange());
             scrollCenter(vditor);
         }
+
+        renderToc(vditor);
 
         execAfterRender(vditor, {
             enableAddUndoStack: false,

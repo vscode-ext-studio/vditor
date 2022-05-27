@@ -6,14 +6,13 @@ Easy-to-use Markdown editor, born to adapt to different application scenarios
 <br><br>
 <a title="MIT" target="_blank" href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square"></a>
 <a title="npm bundle size" target="_blank" href="https://www.npmjs.com/package/vditor"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/vditor?style=flat-square&color=blueviolet"></a>
-<a title="Dependencies" target="_blank" href="https://github.com/Vanessa219/vditor"><img src="https://img.shields.io/david/Vanessa219/vditor.svg?style=flat-square&color=ff96b4"></a>  <br>
-<a title="Version" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/v/vditor.svg?style=flat-square"></a>
-<a title="Downloads" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/dt/vditor.svg?style=flat-square&color=97ca00"></a><br>
+<a title="Version" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/v/vditor.svg?style=flat-square"></a><br>
+<a title="Downloads" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/dt/vditor.svg?style=flat-square&color=97ca00"></a>
 <a title="jsdelivr" target="_blank" href="https://www.jsdelivr.com/package/npm/vditor"><img src="https://data.jsdelivr.com/v1/package/npm/vditor/badge"/></a>
 <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/Vanessa219/vditor.svg"></a> <br><br>
-<a title="GitHub Watchers" target="_blank" href="https://github.com/Vanessa219/vditor/watchers"><img src="https://img.shields.io/github/watchers/Vanessa219/vditor.svg?label=Watchers&style=social"></a>  
-<a title="GitHub Stars" target="_blank" href="https://github.com/Vanessa219/vditor/stargazers"><img src="https://img.shields.io/github/stars/Vanessa219/vditor.svg?label=Stars&style=social"></a>  
-<a title="GitHub Forks" target="_blank" href="https://github.com/Vanessa219/vditor/network/members"><img src="https://img.shields.io/github/forks/Vanessa219/vditor.svg?label=Forks&style=social"></a>  
+<a title="GitHub Watchers" target="_blank" href="https://github.com/Vanessa219/vditor/watchers"><img src="https://img.shields.io/github/watchers/Vanessa219/vditor.svg?label=Watchers&style=social"></a>
+<a title="GitHub Stars" target="_blank" href="https://github.com/Vanessa219/vditor/stargazers"><img src="https://img.shields.io/github/stars/Vanessa219/vditor.svg?label=Stars&style=social"></a>
+<a title="GitHub Forks" target="_blank" href="https://github.com/Vanessa219/vditor/network/members"><img src="https://img.shields.io/github/forks/Vanessa219/vditor.svg?label=Forks&style=social"></a>
 <a title="Author GitHub Followers" target="_blank" href="https://github.com/vanessa219"><img src="https://img.shields.io/github/followers/vanessa219.svg?label=Followers&style=social"></a>
 </p>
 
@@ -23,7 +22,7 @@ Easy-to-use Markdown editor, born to adapt to different application scenarios
 
 ## 💡 Introduction
 
-[Vditor](https://b3log.org/vditor) is a browser-side Markdown editor, implemented using TypeScript. Support native JavaScript, Vue, React and Angular, provide [desktop](https://b3log.org/siyuan).
+[Vditor](https://b3log.org/vditor) is a browser-side Markdown editor, Support WYSIWYG, instant rendering (similar to Typora) and split-screen preview mode. It is implemented using TypeScript and supports native JavaScript and frameworks such as Vue, React, Angular, and Svelte..
 
 Welcome to [Vditor Official Site](https://b3log.org/vditor) to learn more.
 
@@ -96,16 +95,16 @@ The traditional *Split View* mode is suitable for Markdown editing on a large sc
 * All GFM syntax: Tables, Task list items, Strikethrough, Autolinks, XSS filtering
 * Common Markdown extended syntax: Footnotes, ToC, Custom Heading ID
 * Chart syntax
-   * Flow chart, sequence diagram, Gantt chart, supported by Mermaid
-   * Graphviz
-   * Line chart, pie chart, brain chart, etc., supported by ECharts
+  * Flow chart, sequence diagram, Gantt chart, supported by Mermaid
+  * Graphviz
+  * Line chart, pie chart, brain chart, etc., supported by ECharts
 * Stave: supported by abc.js
 * Math formulas: Math formula blocks, row-level math formulas, supported by MathJax and KaTeX
 * YAML Front Matter
 * Chinese context optimization
-   * Insert space between Chinese and Western
-   * Terminology spelling correction
-   * Chinese followed by English comma period and other punctuation are replaced with Chinese corresponding punctuation
+  * Insert space between Chinese and Western
+  * Terminology spelling correction
+  * Chinese followed by English comma period and other punctuation are replaced with Chinese corresponding punctuation
 
 Most of the above features can be enabled or disabled through the switch configuration, developers can choose to match according to their own application scenarios.
 
@@ -113,7 +112,6 @@ Most of the above features can be enabled or disabled through the switch configu
 
 * [Sym](https://github.com/88250/symphony) A modern community (forum/BBS/SNS/blog) platform implemented in Java
 * [Solo](https://github.com/88250/solo) & [Pipe](https://github.com/88250/pipe) B3log distributed community blog end node, welcome to join the next generation community network
-* [SiYuan](https://b3log.org/siyuan) A Markdown Block-Reference and Bidirectional-Link note-taking application
 * [Arya](https://github.com/nicejade/markdown-online-editor) Based on Vue, Vditor, built online Markdown editor
 * [More cases](https://github.com/Vanessa219/vditor/network/dependents?package_id=UGFja2FnZS0zMTY2Mzg4MzE%3D)
 
@@ -131,7 +129,7 @@ npm install vditor --save
 
 ```ts
 import Vditor from 'vditor'
-import "~vditor/src/assets/scss/index" // Or use dark
+import "~vditor/src/assets/less/index" // Or use dark
 
 const vditor = new Vditor(id, {options...})
 ```
@@ -151,12 +149,13 @@ const vditor = new Vditor(id, {options...})
 * [Demo](https://b3log.org/vditor/demo/index.html)
 * [CommonJS Editor](https://github.com/Vanessa219/vditor/blob/master/demo/index.js)
 * [CommonJS Render](https://github.com/Vanessa219/vditor/blob/master/demo/render.js)
+* [Use in Svelte](https://github.com/HerbertHe/svelte-vditor-demo)
 
 ### Themes
 
-* Support two sets of black and white themes: classic/dark
-* Use the scss/css developed by yourself to fully customize the style after referring to the existing style
-* Theme colors can be customized by modifying variables in [index.scss](https://github.com/Vanessa219/vditor/blob/master/src/assets/scss/index.scss)
+* Support four sets of black and white themes: and-design, classic, dark, wechat
+* Use the less/css developed by yourself to fully customize the style after referring to the existing style
+* Theme colors can be customized by modifying variables in [index.less](https://github.com/Vanessa219/vditor/blob/master/src/assets/less/index.less)
 * Adding `class="vditor-reset"` (classic theme) or `class="vditor-reset vditor-reset--dark"` (black theme) attribute on the content display element can display the content more friendly
 
 ### API
@@ -171,13 +170,14 @@ Can be filled with element `id` or element itself` HTMLElement`
 
 |   | Explanation | Default |
 | - | - | - |
+| i18n | I18n, more details see ITips | - |
 | undoDelay | Undo interval | - |
 | after | Callback method after editor asynchronous rendering is completed | - |
 | height | Total editor height | 'auto' |
 | minHeight | Editing area minimum height | - |
 | width | Total editor width, supports % | 'auto' |
 | placeholder | Tips when the input area is empty | '' |
-| lang | i18n: en_US, ja_JP, ko_KR, ru_RU, zh_CN | 'zh_CN' |
+| lang | I18n type: en_US, ja_JP, ko_KR, ru_RU, zh_CN, zh_TW | 'zh_CN' |
 | input | Trigger after input (value: string) | - |
 | focus | Trigger after focusing (value: string) | - |
 | blur | Trigger after out of focus (value: string) | - |
@@ -197,7 +197,7 @@ Can be filled with element `id` or element itself` HTMLElement`
 
 * Toolbar, you can use name for shorthand: `toolbar: ['emoji', 'br', 'bold', '|', 'line']`. See default [src/ts/util/Options.ts](https://github.com/Vanessa219/vditor/blob/master/src/ts/util/Options.ts)
 * name can be enumerated as: `emoji` , `headings` , `bold` , `italic` , `strike` , `|` , `line` , `quote` , `list` , `ordered-list` , `check` ,`outdent` ,`indent` , `code` , `inline-code`, `insert-after`, `insert-before`, `code-theme`, `content-theme`, `export`, `undo` , `redo` , `upload` , `link` , `table` , `record` , `edit-mode` , `both` , `preview` , `fullscreen` , `outline` , `devtools` , `info` , `help` , `br`
-* When `name` is not in the enumeration, you can add a custom button in the following format: 
+* When `name` is not in the enumeration, you can add a custom button in the following format:
 
 ```js
 new Vditor('vditor', {
@@ -279,7 +279,7 @@ new Vditor('vditor', {
 |   | Explanation | Default |
 | - | - | - |
 | current | current Markdown Theme | "light" |
-| list | Choose Markdown Theme List | { dark: "Dark", light: "Light", wechat: "WeChat" } |
+| list | Choose Markdown Theme List | { "ant-design": "Ant Design", dark: "Dark", light: "Light", wechat: "WeChat" } |
 | path | CSS Path | `https://cdn.jsdelivr.net/npm/vditor@${VDITOR_VERSION}/dist/css/content-theme` |
 
 #### options.preview.hljs
@@ -339,13 +339,15 @@ Default: ["desktop", "tablet", "mobile", "mp-wechat", "zhihu"]
 | extend: IHintExtend[] | @/# and other keyword auto-completion expansion | [] |
 
 ```ts
-interface IHintExtend {
-    key: string;
+interface IHintData {
+  html: string;
+  value: string;
+}
 
-    hint?(value: string): Array<{
-        html: string;
-        value: string;
-    }>;
+interface IHintExtend {
+  key: string;
+
+  hint?(value: string): IHintData[] | Promise<IHintData[]>;
 }
 ```
 
@@ -354,41 +356,41 @@ interface IHintExtend {
 * The data structure of the file upload is as follows. When the data structure returned by the backend is inconsistent, you can use `format` for conversion.
 
 ```js
-// POST data  
-xhr.send(formData);  // formData = FormData.append("file[]", File)  
-// return data  
-{  
- "msg": "",  
- "code": 0,  
- "data": {  
- "errFiles": ['filename', 'filename2'],  
- "succMap": {  
-   "filename3": "filepath3",  
-   "filename3": "filepath3"  
-   }  
- }  
+// POST data
+xhr.send(formData);  // formData = FormData.append("file[]", File)
+// return data
+{
+ "msg": "",
+ "code": 0,
+ "data": {
+ "errFiles": ['filename', 'filename2'],
+ "succMap": {
+   "filename3": "filepath3",
+   "filename3": "filepath3"
+   }
+ }
 }
 ```
 
 * In order to prevent the off-site pictures from being invalid, `linkToImgUrl` can transfer the off-site picture addresses in the clipboard to the server for saving and processing. The data structure is as follows:
 
 ```js
-// POST data  
+// POST data
 xhr.send(JSON.stringify({url: src})); // src is the address of the image outside the station
-// return data  
-{  
- msg: '',  
- code: 0,  
- data : {  
-   originalURL: '',  
-   url: ''  
- }  
+// return data
+{
+ msg: '',
+ code: 0,
+ data : {
+   originalURL: '',
+   url: ''
+ }
 }
 ```
 
 |   | Explanation | Default |
 | - | - | - |
-| url | Upload url | '' |
+| url | Upload url, empty will not trigger upload related events | '' |
 | max | The largest upload file Byte | 10 * 1024 * 1024 |
 | linkToImgUrl | When the clipboard contains the image address, use this url to re-upload | '' |
 | linkToImgCallback | Callback when uploading picture address | - |
@@ -401,9 +403,9 @@ xhr.send(JSON.stringify({url: src})); // src is the address of the image outside
 | filename | Sanitizing file names (name: string): string \| name => name.replace(/\W/g, '') |
 | accept | File upload type, same as [input accept](https://www.w3schools.com/tags/att_input_accept.asp) | - |
 | validate | Check, return true if successful, otherwise return error message (files: File[]) => string \| boolean | - |
-| handler | Custom upload, return error message when an error occurs (files: File[]) => string \| null | - |
+| handler(files: File[]) => string \| null \| Promise<string> \| Promise<null> | Custom upload, return error message when an error occurs | - |
 | format | Transform the data returned by the server to meet the built-in data structure (files: File[], responseText: string): string | - |
-| file | Process the uploaded file before returning (files: File[]): File[] | - |
+| file(files: File[]): File[] \| Promise<File[]> | Process the uploaded file before return. | - |
 | setHeaders | Use the return value to set the header before uploading (): { [key: string]: string } | - |
 | extraData | Append data to FormData { [key: string]: string | Blob } | - |
 | multiple | Allow multiple file uploads | true |
@@ -440,6 +442,7 @@ xhr.send(JSON.stringify({url: src})); // src is the address of the image outside
 
 |   | Explanation |
 | - | - |
+| exportJSON(markdown: string) | Get JSON by markdown |
 | getValue() | Get editor content |
 | getHTML() | Get preview area content |
 | insertValue(value: string, render = true) | Insert content at the focus and markdown rendering by default |
@@ -478,7 +481,7 @@ Vditor.mermaidRender(document)
 ```
 
 ```js
-import VditorPreview from 'vditor/dist/method.min'  
+import VditorPreview from 'vditor/dist/method.min'
 VditorPreview.mermaidRender(document)
 ```
 
@@ -491,9 +494,9 @@ options?: IPreviewOptions {
   mode: "dark" | "light";
   anchor?: number;  // 0: no render, 1: render left, 2: render right
   customEmoji?: { [key: string]: string };    // Custom emoji, default is {}
-  lang?: (keyof II18nLang);    // Language, default is 'zh_CN'  
-  emojiPath?: string;    // Emoji picture path 
-  hljs?: IHljs; // Refer to options.preview.hljs 
+  lang?: (keyof II18nLang);    // Language, default is 'zh_CN'
+  emojiPath?: string;    // Emoji picture path
+  hljs?: IHljs; // Refer to options.preview.hljs
   speech?: {  // Read the selected content
     enable?: boolean,
   };
@@ -514,7 +517,7 @@ options?: IPreviewOptions {
 | previewImage(oldImgElement: HTMLImageElement, lang: keyof II18n = "zh_CN", theme = "classic") | Click on the image to preview |
 | mermaidRender(element: HTMLElement, cdn = options.cdn, theme = options.theme) | flowchart/sequence diagram/gantt diagram rendering |
 | flowchartRender(element: HTMLElement, cdn = options.cdn) | flowchart.js rendering |
-| codeRender(element: HTMLElement, lang: (keyof II18nLang) = "zh_CN") | Add a copy button for the code block in element |
+| codeRender(element: HTMLElement) | Add a copy button for the code block in element |
 | chartRender(element: (HTMLElement\| Document) = document, cdn = options.cdn, theme = options.theme) | Chart rendering |
 | plantumlRender(element: (HTMLElement\| Document) = document, cdn = options.cdn) | plantuml rendering |
 | abcRender(element: (HTMLElement\| Document) = document, cdn = options.cdn) | Stave rendering |
