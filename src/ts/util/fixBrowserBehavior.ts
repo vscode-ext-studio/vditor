@@ -1389,7 +1389,7 @@ export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent)
             }
         }
     } else if (code) {
-        callback.pasteCode(code);
+        callback.pasteCode(code as any);
     } else {
         if (textHTML.trim() !== "") {
             const tempElement = document.createElement("div");

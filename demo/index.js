@@ -75,7 +75,7 @@ window.vditor = new Vditor('vditor', {
     math: {
       engine: 'KaTeX',
       "inlineDigit": true
-  }
+    }
   },
   toolbarConfig: {
     pin: true,
@@ -139,14 +139,15 @@ window.vditor = new Vditor('vditor', {
       token: 'test',
       url: '/api/upload/editor',
       linkToImgUrl: '/api/upload/fetch',
-      filename (name) {
+      filename(name) {
         return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').
           replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').
           replace('/\\s/g', '')
       },
     },
-  })
-}
+  }
+})
+
 initVditor('zh_CN')
 window.setLang = (language) => {
   window.vditor.destroy()
