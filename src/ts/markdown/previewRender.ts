@@ -97,14 +97,14 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
                     document.head.removeChild(el);
                 }
             });
-            await addScript(`${mergedOptions.cdn}/dist/js/i18n/${mergedOptions.lang}.js`, i18nScriptID);
+            await addScript(`${mergedOptions.extPath}/dist/js/i18n/${mergedOptions.lang}.js`, i18nScriptID);
         }
     } else {
         window.VditorI18n = mergedOptions.i18n;
     }
 
     if (mergedOptions.icon) {
-        await addScript(`${mergedOptions.cdn}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
+        await addScript(`${mergedOptions.extPath}/dist/js/icons/${mergedOptions.icon}.js`, "vditorIconScript");
     }
 
     setContentTheme(mergedOptions.theme.current, mergedOptions.theme.path);

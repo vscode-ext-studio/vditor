@@ -1,5 +1,5 @@
-import {getHTML} from "../markdown/getHTML";
-import {getMarkdown} from "../markdown/getMarkdown";
+import { getHTML } from "../markdown/getHTML";
+import { getMarkdown } from "../markdown/getMarkdown";
 
 export const download = (vditor: IVditor, content: string, filename: string) => {
     const aElement = document.createElement("a");
@@ -55,7 +55,7 @@ window.addEventListener("message", (e) => {
 export const exportHTML = (vditor: IVditor) => {
     const content = getHTML(vditor);
     const html = `<html><head><link rel="stylesheet" type="text/css" href="${vditor.options.cdn}/dist/index.css"/>
-<script src="${vditor.options.cdn}/dist/js/i18n/${vditor.options.lang}.js"></script>
+    <script src="${vditor.options.extPath}/dist/js/i18n/${vditor.options.lang}.js"></script>
 <script src="${vditor.options.cdn}/dist/method.min.js"></script></head>
 <body><div class="vditor-reset" id="preview">${content}</div>
 <script>
@@ -76,6 +76,6 @@ export const exportHTML = (vditor: IVditor) => {
     Vditor.mediaRender(previewElement);
     Vditor.speechRender(previewElement);
 </script>
-<script src="${vditor.options.cdn}/dist/js/icons/${vditor.options.icon}.js"></script></body></html>`;
+<script src="${vditor.options.extPath}/dist/js/icons/${vditor.options.icon}.js"></script></body></html>`;
     download(vditor, html, content.substr(0, 10) + ".html");
 };

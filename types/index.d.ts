@@ -519,6 +519,7 @@ interface IPreviewOptions {
     anchor?: number; // 0: no render, 1: render left, 2: render right
     math?: IMath;
     cdn?: string;
+    extPath?: string;
     markdown?: IMarkdownConfig;
     renderers?: ILuteRender;
     theme?: IPreviewTheme;
@@ -645,6 +646,7 @@ interface IOptions {
     classes?: IClasses;
     /** 配置自建 CDN 地址。默认值: 'https://cdn.jsdelivr.net/npm/vditor@${VDITOR_VERSION}' */
     cdn?: string;
+    extPath?: string;
     /** tab 键操作字符串，支持 \t 及任意字符串 */
     tab?: string;
     /** @link https://ld246.com/article/1549638745630#options-outline */
