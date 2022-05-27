@@ -6,14 +6,13 @@
 <br><br>
 <a title="MIT" target="_blank" href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square"></a>
 <a title="npm bundle size" target="_blank" href="https://www.npmjs.com/package/vditor"><img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/vditor?style=flat-square&color=blueviolet"></a>
-<a title="Dependencies" target="_blank" href="https://github.com/Vanessa219/vditor"><img src="https://img.shields.io/david/Vanessa219/vditor.svg?style=flat-square&color=ff96b4"></a>  <br>
-<a title="Version" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/v/vditor.svg?style=flat-square"></a>
-<a title="Downloads" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/dt/vditor.svg?style=flat-square&color=97ca00"></a><br>
+<a title="Version" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/v/vditor.svg?style=flat-square"></a><br>
+<a title="Downloads" target="_blank" href="https://www.npmjs.com/package/vditor"><img src="https://img.shields.io/npm/dt/vditor.svg?style=flat-square&color=97ca00"></a>
 <a title="jsdelivr" target="_blank" href="https://www.jsdelivr.com/package/npm/vditor"><img src="https://data.jsdelivr.com/v1/package/npm/vditor/badge"/></a>
 <a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/Vanessa219/vditor.svg"></a> <br><br>
-<a title="GitHub Watchers" target="_blank" href="https://github.com/Vanessa219/vditor/watchers"><img src="https://img.shields.io/github/watchers/Vanessa219/vditor.svg?label=Watchers&style=social"></a>  
-<a title="GitHub Stars" target="_blank" href="https://github.com/Vanessa219/vditor/stargazers"><img src="https://img.shields.io/github/stars/Vanessa219/vditor.svg?label=Stars&style=social"></a>  
-<a title="GitHub Forks" target="_blank" href="https://github.com/Vanessa219/vditor/network/members"><img src="https://img.shields.io/github/forks/Vanessa219/vditor.svg?label=Forks&style=social"></a>  
+<a title="GitHub Watchers" target="_blank" href="https://github.com/Vanessa219/vditor/watchers"><img src="https://img.shields.io/github/watchers/Vanessa219/vditor.svg?label=Watchers&style=social"></a>
+<a title="GitHub Stars" target="_blank" href="https://github.com/Vanessa219/vditor/stargazers"><img src="https://img.shields.io/github/stars/Vanessa219/vditor.svg?label=Stars&style=social"></a>
+<a title="GitHub Forks" target="_blank" href="https://github.com/Vanessa219/vditor/network/members"><img src="https://img.shields.io/github/forks/Vanessa219/vditor.svg?label=Forks&style=social"></a>
 <a title="Author GitHub Followers" target="_blank" href="https://github.com/vanessa219"><img src="https://img.shields.io/github/followers/vanessa219.svg?label=Followers&style=social"></a>
 </p>
 
@@ -23,7 +22,7 @@
 
 ## 💡 简介
 
-[Vditor](https://b3log.org/vditor) 是一款浏览器端的 Markdown 编辑器，支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。它使用 TypeScript 实现，支持原生 JavaScript、Vue、React、Angular，提供[桌面版](https://b3log.org/siyuan)。
+[Vditor](https://b3log.org/vditor) 是一款浏览器端的 Markdown 编辑器，支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。它使用 TypeScript 实现，支持原生 JavaScript 以及 Vue、React、Angular 和 Svelte 等框架。
 
 欢迎到 [Vditor 官方讨论区](https://ld246.com/tag/vditor)了解更多。同时也欢迎关注 B3log 开源社区微信公众号 `B3log开源`：
 
@@ -115,7 +114,6 @@ Vditor 在这些方面做了努力，希望能为现代化的通用 Markdown 编
 
 * [Sym](https://github.com/88250/symphony) 一款用 Java 实现的现代化社区（论坛/BBS/社交网络/博客）平台
 * [Solo](https://github.com/88250/solo) & [Pipe](https://github.com/88250/pipe) B3log 分布式社区的博客端节点，欢迎加入下一代社区网络
-* [思源笔记](https://b3log.org/siyuan) 一款 Markdown 块级引用和双向链接的网状笔记应用
 * [Arya](https://github.com/nicejade/markdown-online-editor) 基于 Vue、Vditor，所构建的在线 Markdown 编辑器
 * [更多案例](https://github.com/Vanessa219/vditor/network/dependents?package_id=UGFja2FnZS0zMTY2Mzg4MzE%3D)
 
@@ -133,7 +131,7 @@ npm install vditor --save
 
 ```ts
 import Vditor from 'vditor'
-import "~vditor/src/assets/scss/index"
+import "~vditor/src/assets/less/index"
 
 const vditor = new Vditor(id, {options...})
 ```
@@ -153,6 +151,7 @@ const vditor = new Vditor(id, {options...})
 * [官方示例](https://b3log.org/vditor/demo/index.html) / [示例源码](https://github.com/Vanessa219/b3log-index/tree/master/src/vditor)
 * [CommonJS Editor](https://github.com/Vanessa219/vditor/blob/master/demo/index.js)
 * [CommonJS Render](https://github.com/Vanessa219/vditor/blob/master/demo/render.js)
+* [在Svelte中使用](https://github.com/HerbertHe/svelte-vditor-demo)
 
 ### 主题
 
@@ -162,12 +161,12 @@ const vditor = new Vditor(id, {options...})
 
 * 编辑器初始化时可通过 `options.theme` 设置内置主题
 * 初始化完成后可通过 `setTheme` 更新编辑器主题
-* 可通过修改 [index.scss](https://github.com/Vanessa219/vditor/blob/master/src/assets/scss/index.scss) 中的变量对主题颜色进行定制
+* 可通过修改 [index.less](https://github.com/Vanessa219/vditor/blob/master/src/assets/less/index.less) 中的变量对主题颜色进行定制
 * 可参考现有结构和类名在原有基础上进行修改
 
 #### 内容主题
 
-Markdown 输出的 HTML 所展现的外观。内置 light，dark，wechat 3 套主题。支持内容主题扩展接口。
+Markdown 输出的 HTML 所展现的外观。内置 ant-design, light，dark，wechat 4 套主题。支持内容主题扩展接口。
 
 * 需在显示元素上添加 `class="vditor-reset"`
 * 编辑器初始化时可通过 `options.preview.theme` 设置内置或自己开发的主题列表
@@ -194,13 +193,14 @@ Markdown 输出的 HTML 所展现的外观。内置 light，dark，wechat 3 套�
 
 |   | 说明 | 默认值 |
 | - | - | - |
+| i18n | 多语言，参见 ITips | - |
 | undoDelay | 历史记录间隔 | - |
 | after | 编辑器异步渲染完成后的回调方法 | - |
 | height | 编辑器总高度 | 'auto' |
 | minHeight | 编辑区域最小高度 | - |
 | width | 编辑器总宽度，支持 % | 'auto' |
 | placeholder | 输入区域为空时的提示 | '' |
-| lang | 多语言：en_US, ja_JP, ko_KR, ru_RU, zh_CN | 'zh_CN' |
+| lang | 语言种类：en_US, ja_JP, ko_KR, ru_RU, zh_CN, zh_TW | 'zh_CN' |
 | input(value: string) | 输入后触发  | - |
 | focus(value: string) | 聚焦后触发 | - |
 | blur(value: string) | 失焦后触发 | - |
@@ -262,7 +262,7 @@ new Vditor('vditor', {
 |   | 说明 | 默认值 |
 | - | - | - |
 | enable | 是否启用计数器 | false |
-| tipPosition(length: number, counter: options.counter): void | 字数统计回调 | - |
+| after(length: number, counter: options.counter): void | 字数统计回调 | - |
 | max | 允许输入的最大值 | - |
 | type | 统计类型：'markdown', 'text' | 'markdown' |
 
@@ -327,7 +327,7 @@ new Vditor('vditor', {
 |   | 说明 | 默认值 |
 | - | - | - |
 | current | 当前主题 | "light" |
-| list | 可选主题列表 | { dark: "Dark", light: "Light", wechat: "WeChat" } |
+| list | 可选主题列表 | { "ant-design": "Ant Design", dark: "Dark", light: "Light", wechat: "WeChat" } |
 | path | 主题样式地址 | `https://cdn.jsdelivr.net/npm/vditor@${VDITOR_VERSION}/dist/css/content-theme` |
 
 #### options.preview.math
@@ -363,13 +363,15 @@ new Vditor('vditor', {
 | extend: IHintExtend[] | 对 @/话题等关键字自动补全的扩展 | [] |
 
 ```ts
+interface IHintData {
+  html: string;
+  value: string;
+}
+
 interface IHintExtend {
     key: string;
 
-    hint?(value: string): Array<{
-        html: string;
-        value: string;
-    }>;
+    hint?(value: string): IHintData[] | Promise<IHintData[]>;
 }
 ```
 
@@ -378,35 +380,35 @@ interface IHintExtend {
 * 文件上传的数据结构如下。后端返回的数据结构不一致时，可使用 `format` 进行转换。
 
 ```js
-// POST data  
-xhr.send(formData);  // formData = FormData.append("file[]", File)  
-// return data  
-{  
- "msg": "",  
- "code": 0,  
- "data": {  
- "errFiles": ['filename', 'filename2'],  
- "succMap": {  
-   "filename3": "filepath3",  
-   "filename3": "filepath3"  
-   }  
- }  
+// POST data
+xhr.send(formData);  // formData = FormData.append("file[]", File)
+// return data
+{
+ "msg": "",
+ "code": 0,
+ "data": {
+ "errFiles": ['filename', 'filename2'],
+ "succMap": {
+   "filename3": "filepath3",
+   "filename3": "filepath3"
+   }
+ }
 }
 ```
 
 * 为了防止站外图片失效， `linkToImgUrl` 可将剪贴板中的站外图片地址传到服务器端进行保存处理，其数据结构如下：
 
 ```js
-// POST data  
-xhr.send(JSON.stringify({url: src})); // src 为站外图片地址  
-// return data  
-{  
- msg: '',  
- code: 0,  
- data : {  
-   originalURL: '',  
-   url: ''  
- }  
+// POST data
+xhr.send(JSON.stringify({url: src})); // src 为站外图片地址
+// return data
+{
+ msg: '',
+ code: 0,
+ data : {
+   originalURL: '',
+   url: ''
+ }
 }
 ```
 
@@ -434,7 +436,7 @@ if (xhr.status === 200) {
 
 |   | 说明 | 默认值 |
 | - | - | - |
-| url | 上传 url | '' |
+| url | 上传 url，为空则不会触发上传相关事件 | '' |
 | max | 上传文件最大 Byte | 10 * 1024 * 1024 |
 | linkToImgUrl | 剪切板中包含图片地址时，使用此 url 重新上传 | '' |
 | linkToImgCallback(responseText: string) | 图片地址上传回调 | - |
@@ -447,9 +449,9 @@ if (xhr.status === 200) {
 | filename(name: string): string | 文件名安全处理 | name => name.replace(/\W/g, '') |
 | accept | 文件上传类型，同[input accept](https://www.w3schools.com/tags/att_input_accept.asp) | - |
 | validate(files: File[]) => string \| boolean | 校验，成功时返回 true 否则返回错误信息 | - |
-| handler(files: File[]) => string \| null | 自定义上传，当发生错误时返回错误信息 | - |
+| handler(files: File[]) => string \| null \| Promise<string> \| Promise<null> | 自定义上传，当发生错误时返回错误信息 | - |
 | format(files: File[], responseText: string): string | 对服务端返回的数据进行转换，以满足内置的数据结构 | - |
-| file(files: File[]): File[] | 将上传的文件处理后再返回 | - |
+| file(files: File[]): File[] \| Promise<File[]> | 将上传的文件处理后再返回 | - |
 | setHeaders(): { [key: string]: string } | 上传前使用返回值设置头 | - |
 | extraData: { [key: string]: string \| Blob } | 为 FormData 添加额外的参数 | - |
 | multiple | 上传文件是否为多个 | true |
@@ -486,6 +488,7 @@ if (xhr.status === 200) {
 
 |   | 说明 |
 | - | - |
+| exportJSON(markdown: string) | 根据 Markdown 获取对应 JSON |
 | getValue() | 获取 Markdown 内容 |
 | getHTML() | 获取 HTML 内容 |
 | insertValue(value: string, render = true) | 在焦点处插入内容，并默认进行 Markdown 渲染 |
@@ -524,7 +527,7 @@ Vditor.mermaidRender(document)
 ```
 
 ```js
-import VditorPreview from 'vditor/dist/method.min'  
+import VditorPreview from 'vditor/dist/method.min'
 VditorPreview.mermaidRender(document)
 ```
 
@@ -536,10 +539,10 @@ markdown: string,  // 需要渲染的 markdown 原文
 options?: IPreviewOptions {
   mode: "dark" | "light";
   anchor?: number;  // 为标题添加锚点 0：不渲染；1：渲染于标题前；2：渲染于标题后，默认 0
-  customEmoji?: { [key: string]: string };    // 自定义 emoji，默认为 {}  
-  lang?: (keyof II18nLang);    // 语言，默认为 'zh_CN'  
-  emojiPath?: string;    // 表情图片路径 
-  hljs?: IHljs; // 参见 options.preview.hljs 
+  customEmoji?: { [key: string]: string };    // 自定义 emoji，默认为 {}
+  lang?: (keyof II18nLang);    // 语言，默认为 'zh_CN'
+  emojiPath?: string;    // 表情图片路径
+  hljs?: IHljs; // 参见 options.preview.hljs
   speech?: {  // 对选中后的内容进行阅读
     enable?: boolean,
   };
@@ -561,7 +564,7 @@ options?: IPreviewOptions {
 | previewImage(oldImgElement: HTMLImageElement, lang: keyof II18n = "zh_CN", theme = "classic") | 点击图片预览 |
 | mermaidRender(element: HTMLElement, cdn = options.cdn, theme = options.theme) | 流程图/时序图/甘特图 |
 | flowchartRender(element: HTMLElement, cdn = options.cdn) | flowchart 渲染 |
-| codeRender(element: HTMLElement, lang: (keyof II18nLang) = "zh_CN") | 为 element 中的代码块添加复制按钮 |
+| codeRender(element: HTMLElement) | 为 element 中的代码块添加复制按钮 |
 | chartRender(element: (HTMLElement \| Document) = document, cdn = options.cdn, theme = options.theme) | 图表渲染 |
 | mindmapRender(element: (HTMLElement \| Document) = document, cdn = options.cdn, theme = options.theme) | 脑图渲染 |
 | plantumlRender(element: (HTMLElement \| Document) = document, cdn = options.cdn) | plantuml 渲染 |

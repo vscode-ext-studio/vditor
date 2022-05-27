@@ -2,6 +2,10 @@ declare module "*.svg";
 
 declare module "*.png";
 
+interface Window {
+    VditorI18n: ITips;
+}
+
 interface IObject {
     [key: string]: string;
 }
@@ -114,6 +118,8 @@ declare class Lute {
 
     public static NewNodeID(): string;
 
+    public static Sanitize(html: string): string;
+
     private constructor();
 
     public SetJSRenderers(options?: {
@@ -216,6 +222,9 @@ declare class Lute {
 
     // 粘贴是 md 转换为 sv
     public Md2VditorSVDOM(text: string): string;
+
+    // 将markdown转化为JSON结构输出 https://github.com/88250/lute/issues/120
+    public RenderJSON(markdown: string): string;
 }
 
 declare const webkitAudioContext: {
@@ -223,12 +232,95 @@ declare const webkitAudioContext: {
     new(contextOptions?: AudioContextOptions): AudioContext,
 };
 
+interface ITips {
+    [index: string]: string;
+
+    alignCenter: string;
+    alignLeft: string;
+    alignRight: string;
+    alternateText: string;
+    bold: string;
+    both: string;
+    check: string;
+    close: string;
+    code: string;
+    "code-theme": string;
+    column: string;
+    comment: string;
+    confirm: string;
+    "content-theme": string;
+    copied: string;
+    copy: string;
+    "delete-column": string;
+    "delete-row": string;
+    devtools: string;
+    down: string;
+    downloadTip: string;
+    edit: string;
+    "edit-mode": string;
+    emoji: string;
+    export: string;
+    fileTypeError: string;
+    footnoteRef: string;
+    fullscreen: string;
+    generate: string;
+    headings: string;
+    help: string;
+    imageURL: string;
+    indent: string;
+    info: string;
+    "inline-code": string;
+    "insert-after": string;
+    "insert-before": string;
+    insertColumnLeft: string;
+    insertColumnRight: string;
+    insertRowAbove: string;
+    insertRowBelow: string;
+    instantRendering: string;
+    italic: string;
+    language: string;
+    line: string;
+    link: string;
+    linkRef: string;
+    list: string;
+    more: string;
+    nameEmpty: string;
+    "ordered-list": string;
+    outdent: string;
+    outline: string;
+    over: string;
+    performanceTip: string;
+    preview: string;
+    quote: string;
+    record: string;
+    "record-tip": string;
+    recording: string;
+    redo: string;
+    remove: string;
+    row: string;
+    spin: string;
+    splitView: string;
+    strike: string;
+    table: string;
+    textIsNotEmpty: string;
+    title: string;
+    tooltipText: string;
+    undo: string;
+    up: string;
+    update: string;
+    upload: string;
+    uploadError: string;
+    uploading: string;
+    wysiwyg: string;
+}
+
 interface II18n {
-    en_US: IObject;
-    ja_JP: IObject;
-    ko_KR: IObject;
-    ru_RU: IObject;
-    zh_CN: IObject;
+    en_US: ITips;
+    ja_JP: ITips;
+    ko_KR: ITips;
+    ru_RU: ITips;
+    zh_CN: ITips;
+    zh_TW: ITips;
 }
 
 interface IClasses {
@@ -280,7 +372,7 @@ interface IUpload {
     validate?(files: File[]): string | boolean;
 
     /** 自定义上传，当发生错误时返回错误信息 */
-    handler?(files: File[]): string | null;
+    handler?(files: File[]): string | null | Promise<string> | Promise<null>;
 
     /** 对服务端返回的数据进行转换，以满足内置的数据结构 */
     format?(files: File[], responseText: string): string;
@@ -289,7 +381,7 @@ interface IUpload {
     linkToImgFormat?(responseText: string): string;
 
     /** 将上传的文件处理后再返回  */
-    file?(files: File[]): File[];
+    file?(files: File[]): File[] | Promise<File[]>;
 
     /** 图片地址上传后的回调  */
     linkToImgCallback?(responseText: string): void;
@@ -417,6 +509,7 @@ interface IPreviewOptions {
     mode: "dark" | "light";
     customEmoji?: IObject;
     lang?: (keyof II18n);
+    i18n?: ITips;
     lazyLoadImage?: string;
     emojiPath?: string;
     hljs?: IHljs;
@@ -426,6 +519,7 @@ interface IPreviewOptions {
     anchor?: number; // 0: no render, 1: render left, 2: render right
     math?: IMath;
     cdn?: string;
+    extPath?: string;
     markdown?: IMarkdownConfig;
     renderers?: ILuteRender;
     theme?: IPreviewTheme;
@@ -444,7 +538,7 @@ interface IHintData {
 interface IHintExtend {
     key: string;
 
-    hint?(value: string): IHintData[];
+    hint?(value: string): IHintData[] | Promise<IHintData[]>;
 }
 
 /** @link https://ld246.com/article/1549638745630#options-hint */
@@ -471,6 +565,8 @@ interface IResize {
 
 /** @link https://ld246.com/article/1549638745630#options */
 interface IOptions {
+    /** RTL */
+    rtl?: boolean;
     /** 历史记录间隔 */
     undoDelay?: number;
     /** 内部调试时使用 */
@@ -491,6 +587,8 @@ interface IOptions {
     placeholder?: string;
     /** 多语言。默认值: 'zh_CN' */
     lang?: (keyof II18n);
+    /** 国际化, 自定义语言。优先级低于lang */
+    i18n?: ITips;
     /** @link https://ld246.com/article/1549638745630#options-fullscreen */
     fullscreen?: {
         index: number;
@@ -548,6 +646,7 @@ interface IOptions {
     classes?: IClasses;
     /** 配置自建 CDN 地址。默认值: 'https://cdn.jsdelivr.net/npm/vditor@${VDITOR_VERSION}' */
     cdn?: string;
+    extPath?: string;
     /** tab 键操作字符串，支持 \t 及任意字符串 */
     tab?: string;
     /** @link https://ld246.com/article/1549638745630#options-outline */
@@ -560,7 +659,7 @@ interface IOptions {
     after?(): void;
 
     /** 输入后触发 */
-    input?(value: string, previewElement?: HTMLElement): void;
+    input?(value: string): void;
 
     /** 代码块主题修改后触发 */
     changeCodeTheme?(value: string): void;
@@ -660,6 +759,7 @@ interface IVditor {
         triggerRemoveComment(vditor: IVditor): void,
         showComment(): void,
         hideComment(): void,
+        unbindListener(): void,
     };
     ir?: {
         range: Range,

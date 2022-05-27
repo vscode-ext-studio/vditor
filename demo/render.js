@@ -1,5 +1,5 @@
 import Vditor from '../src/method'
-import '../src/assets/scss/index.scss'
+import '../src/assets/less/index.less'
 
 const outlineElement = document.getElementById('outline')
 const previewElement = document.getElementById('preview')
@@ -40,7 +40,7 @@ const render = (fileName) => {
             outlineElement.style.display = 'block'
           }
         },
-        lazyLoadImage: 'https://cdn.jsdelivr.net/npm/vditor/dist/images/img-loading.svg',
+        lazyLoadImage: 'https://unpkg.com/vditor/dist/images/img-loading.svg',
         renderers: {
           renderHeading: (node, entering) => {
             const id = Lute.GetHeadingID(node)
@@ -64,13 +64,13 @@ window.setTheme = (theme) => {
   if (theme === 'dark') {
     Vditor.setCodeTheme('native')
     Vditor.setContentTheme('dark',
-      'https://cdn.jsdelivr.net/npm/vditor/dist/css/content-theme')
+      'https://unpkg.com/vditor/dist/css/content-theme')
     outlineElement.classList.add('dark')
     document.querySelector('html').style.backgroundColor = '#2f363d'
   } else {
     Vditor.setCodeTheme('github')
     Vditor.setContentTheme('light',
-      'https://cdn.jsdelivr.net/npm/vditor/dist/css/content-theme')
+      'https://unpkg.com/vditor/dist/css/content-theme')
     outlineElement.classList.remove('dark')
     document.querySelector('html').style.backgroundColor = '#fff'
   }

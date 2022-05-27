@@ -2,7 +2,7 @@ import {Constants} from "../constants";
 import {input as IRInput} from "../ir/input";
 import {processAfterRender} from "../ir/process";
 import {processAfterRender as processSVAfterRender, processPaste} from "../sv/process";
-import {uploadFiles} from "../upload";
+import {uploadFiles} from "../upload/index";
 import {setHeaders} from "../upload/setHeaders";
 import {afterRenderEvent} from "../wysiwyg/afterRenderEvent";
 import {input} from "../wysiwyg/input";
@@ -228,9 +228,13 @@ export const listToggle = (vditor: IVditor, range: Range, type: string, cancel =
                 let element;
                 if (type === "list") {
                     element = document.createElement("ul");
+                    element.setAttribute("data-marker", "*");
                 } else {
                     element = document.createElement("ol");
+                    element.setAttribute("data-marker", "1.");
                 }
+                element.setAttribute("data-block", "0");
+                element.setAttribute("data-tight", itemElement.parentElement.getAttribute("data-tight"));
                 element.innerHTML = itemElement.parentElement.innerHTML;
                 itemElement.parentElement.parentNode.replaceChild(element, itemElement.parentElement);
             }
@@ -973,7 +977,7 @@ export const fixCodeBlock = (vditor: IVditor, event: KeyboardEvent, codeRenderEl
     if (event.key === "Backspace" && !isCtrl(event) && !event.shiftKey && !event.altKey) {
         const codePosition = getSelectPosition(codeRenderElement, vditor[vditor.currentMode].element, range);
         if ((codePosition.start === 0 ||
-            (codePosition.start === 1 && codeRenderElement.innerText === "\n")) // 空代码块，光标在 \n 后
+                (codePosition.start === 1 && codeRenderElement.innerText === "\n")) // 空代码块，光标在 \n 后
             && range.toString() === "") {
             codeRenderElement.parentElement.outerHTML =
                 `<p data-block="0"><wbr>${codeRenderElement.firstElementChild.innerHTML}</p>`;
@@ -1089,7 +1093,7 @@ export const fixTask = (vditor: IVditor, range: Range, event: KeyboardEvent) => 
         if (event.key === "Backspace" && !isCtrl(event) && !event.shiftKey && !event.altKey && range.toString() === ""
             && range.startOffset === 1
             && ((startContainer.nodeType === 3 && startContainer.previousSibling &&
-                (startContainer.previousSibling as HTMLElement).tagName === "INPUT")
+                    (startContainer.previousSibling as HTMLElement).tagName === "INPUT")
                 || startContainer.nodeType !== 3)) {
             const previousElement = taskItemElement.previousElementSibling;
             taskItemElement.querySelector("input").remove();
@@ -1248,11 +1252,15 @@ export const fixFirefoxArrowUpTable = (event: KeyboardEvent, blockElement: false
 export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent) & { target: HTMLElement }, callback: {
     pasteCode(code: string): void,
 }) => {
+    if (vditor[vditor.currentMode].element.getAttribute("contenteditable") !== "true") {
+        return;
+    }
     event.stopPropagation();
     event.preventDefault();
     let textHTML;
     let textPlain;
     let files;
+
     if ("clipboardData" in event) {
         textHTML = event.clipboardData.getData("text/html");
         textPlain = event.clipboardData.getData("text/plain");
@@ -1260,7 +1268,7 @@ export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent)
     } else {
         textHTML = event.dataTransfer.getData("text/html");
         textPlain = event.dataTransfer.getData("text/plain");
-        if (event.dataTransfer.types[0] === "Files") {
+        if (event.dataTransfer.types.includes("Files")) {
             files = event.dataTransfer.items;
         }
     }
@@ -1351,7 +1359,7 @@ export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent)
     if (doc.body) {
         textHTML = doc.body.innerHTML;
     }
-
+    textHTML = Lute.Sanitize(textHTML);
     vditor.wysiwyg.getComments(vditor);
 
     // process code
@@ -1381,7 +1389,7 @@ export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent)
             }
         }
     } else if (code) {
-        callback.pasteCode(code);
+        callback.pasteCode(code as any);
     } else {
         if (textHTML.trim() !== "") {
             const tempElement = document.createElement("div");
@@ -1406,8 +1414,32 @@ export const paste = async (vditor: IVditor, event: (ClipboardEvent | DragEvent)
                 processPaste(vditor, vditor.lute.HTML2Md(tempElement.innerHTML).trimRight());
             }
             vditor.outline.render(vditor);
-        } else if (files.length > 0 && vditor.options.upload.url) {
-            await uploadFiles(vditor, files);
+        } else if (files.length > 0) {
+            if (vditor.options.upload.url || vditor.options.upload.handler) {
+                await uploadFiles(vditor, files);
+            } else {
+                const fileReader = new FileReader();
+                let file: File;
+                if ("clipboardData" in event) {
+                    files = event.clipboardData.files;
+                    file = files[0];
+                } else if (event.dataTransfer.types.includes("Files")) {
+                    files = event.dataTransfer.items;
+                    file = files[0].getAsFile();
+                }
+                if (file && file.type.startsWith("image")) {
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = () => {
+                        let imgHTML = ''
+                        if (vditor.currentMode === "wysiwyg") {
+                            imgHTML += `<img alt="${file.name}" src="${fileReader.result.toString()}">\n`;
+                        } else {
+                            imgHTML += `![${file.name}](${fileReader.result.toString()})\n`;
+                        }
+                        document.execCommand("insertHTML", false, imgHTML);
+                    }
+                }
+            }
         } else if (textPlain.trim() !== "" && files.length === 0) {
             if (vditor.currentMode === "ir") {
                 renderers.Md2VditorIRDOM = {renderLinkDest};

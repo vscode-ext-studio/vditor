@@ -1,12 +1,13 @@
 import {Constants} from "../constants";
 import {addScript} from "../util/addScript";
+import {plantumlRenderAdapter} from "./adapterRender";
 
 declare const plantumlEncoder: {
     encode(options: string): string,
 };
 
 export const plantumlRender = (element: (HTMLElement | Document) = document, cdn = Constants.CDN) => {
-    const plantumlElements = element.querySelectorAll(".language-plantuml");
+    const plantumlElements = plantumlRenderAdapter.getElements(element);
     if (plantumlElements.length === 0) {
         return;
     }
@@ -16,7 +17,7 @@ export const plantumlRender = (element: (HTMLElement | Document) = document, cdn
                 e.parentElement.classList.contains("vditor-ir__marker--pre")) {
                 return;
             }
-            const text = e.textContent.trim();
+            const text = plantumlRenderAdapter.getCode(e).trim();
             if (!text) {
                 return;
             }

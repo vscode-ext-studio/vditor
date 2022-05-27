@@ -1,4 +1,3 @@
-import {i18n} from "../i18n/index";
 import {getEditorRange, setSelectionFocus} from "../util/selection";
 import {getElement} from "./getElement";
 import {setHeaders} from "./setHeaders";
@@ -20,19 +19,20 @@ const validateFile = (vditor: IVditor, files: File[]) => {
     const uploadFileList = [];
     let errorTip = "";
     let uploadingStr = "";
-    const lang: keyof II18n = vditor.options.lang;
+    const lang: keyof II18n | "" = vditor.options.lang;
+    const options: IOptions = vditor.options;
 
     for (let iMax = files.length, i = 0; i < iMax; i++) {
         const file = files[i];
         let validate = true;
 
         if (!file.name) {
-            errorTip += `<li>${i18n[lang].nameEmpty}</li>`;
+            errorTip += `<li>${window.VditorI18n.nameEmpty}</li>`;
             validate = false;
         }
 
         if (file.size > vditor.options.upload.max) {
-            errorTip += `<li>${file.name} ${i18n[lang].over} ${vditor.options.upload.max / 1024 / 1024}M</li>`;
+            errorTip += `<li>${file.name} ${window.VditorI18n.over} ${vditor.options.upload.max / 1024 / 1024}M</li>`;
             validate = false;
         }
 
@@ -56,14 +56,14 @@ const validateFile = (vditor: IVditor, files: File[]) => {
             });
 
             if (!isAccept) {
-                errorTip += `<li>${file.name} ${i18n[lang].fileTypeError}</li>`;
+                errorTip += `<li>${file.name} ${window.VditorI18n.fileTypeError}</li>`;
                 validate = false;
             }
         }
 
         if (validate) {
             uploadFileList.push(file);
-            uploadingStr += `<li>${filename} ${i18n[lang].uploading}</li>`;
+            uploadingStr += `<li>${filename} ${window.VditorI18n.uploading}</li>`;
         }
     }
 
@@ -87,7 +87,7 @@ const genUploadedLabel = (responseText: string, vditor: IVditor) => {
         response.data.errFiles.forEach((data: string) => {
             const lastIndex = data.lastIndexOf(".");
             const filename = vditor.options.upload.filename(data.substr(0, lastIndex)) + data.substr(lastIndex);
-            errorTip += `<li>${filename} ${i18n[vditor.options.lang].uploadError}</li>`;
+            errorTip += `<li>${filename} ${window.VditorI18n.uploadError}</li>`;
         });
         errorTip += "</ul>";
     }
@@ -108,7 +108,7 @@ const genUploadedLabel = (responseText: string, vditor: IVditor) => {
         if (type.indexOf(".wav") === 0 || type.indexOf(".mp3") === 0 || type.indexOf(".ogg") === 0) {
             if (vditor.currentMode === "wysiwyg") {
                 succFileText += `<div class="vditor-wysiwyg__block" data-type="html-block"
- data-block="0"><pre><code>&lt;audio controls="controls" src="${path}"&gt;&lt;/audio&gt;</code></pre>`;
+ data-block="0"><pre><code>&lt;audio controls="controls" src="${path}"&gt;&lt;/audio&gt;</code></pre><pre class="vditor-wysiwyg__preview" data-render="1"><audio controls="controls" src="${path}"></audio></pre></div>\n`;
             } else if (vditor.currentMode === "ir") {
                 succFileText += `<audio controls="controls" src="${path}"></audio>\n`;
             } else {
@@ -123,13 +123,13 @@ const genUploadedLabel = (responseText: string, vditor: IVditor) => {
             || type.indexOf(".svg") === 0
             || type.indexOf(".webp") === 0) {
             if (vditor.currentMode === "wysiwyg") {
-                succFileText += `<img alt="${filename}" src="${path}">`;
+                succFileText += `<img alt="${filename}" src="${path}">\n`;
             } else {
                 succFileText += `![${filename}](${path})\n`;
             }
         } else {
             if (vditor.currentMode === "wysiwyg") {
-                succFileText += `<a href="${path}">${filename}</a>`;
+                succFileText += `<a href="${path}">${filename}</a>\n`;
             } else {
                 succFileText += `[${filename}](${path})\n`;
             }
@@ -154,7 +154,10 @@ const uploadFiles =
         }
 
         if (vditor.options.upload.handler) {
-            const isValidate = vditor.options.upload.handler(fileList);
+            const isValidate = await vditor.options.upload.handler(fileList);
+            if (element) {
+                element.value = "";
+            }
             if (typeof isValidate === "string") {
                 vditor.tip.show(isValidate);
                 return;
