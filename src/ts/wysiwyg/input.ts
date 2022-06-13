@@ -156,7 +156,7 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
         //         <p data-block="0">​-<wbr></p>
         //     </li>
         // </ol>
-        console.log(oldHtml)
+        // console.log(oldHtml)
         html = vditor.lute.SpinVditorDOM(html);
         log("SpinVditorDOM", html, "result", vditor.options.debugger);
 
