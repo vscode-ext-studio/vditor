@@ -1,7 +1,15 @@
 ## Vditor change log
 
 ### 升级
-
+* 3.8
+  * 添加 plantumlRender 方法
+  * options.input 移除 previewElement 参数
+  * 添加表格增加向上插入行 ⇧⌘F 和向左插入列 ⇧⌘G 的快捷键
+  * 快捷键配置格式修改为 ⇧⌘[] / ⌘[] / ⌥⌘[]
+  * 添加 hint.parse 配置
+  * codeRender 方法中移除 lang 参数
+  * 为 options 添加 i18n 语言自定义参数
+  * 添加 exportJSON 方法
 * 3.7
   * `preview` 静态方法添加 `mode` 配置
   * 大纲 DOM 结构和 class 变更
@@ -95,9 +103,19 @@
 
 * [open issues](https://github.com/Vanessa219/vditor/issues)
 
-### v3.8.16 / 2022-06
+### v3.8.18 / 2022-09
 
-* [1242](https://github.com/Vanessa219/vditor/issues/1242) 在即时渲染模式下，表格源文件未对齐 `修复缺陷`
+* [1278](https://github.com/Vanessa219/vditor/issues/1278) RenderJSON 导出的 JSON 不正确 `修复缺陷`
+* [1275](https://github.com/Vanessa219/vditor/issues/1275) XSS 安全漏洞 `修复缺陷`
+
+### v3.8.17 / 2022-08-04
+
+* [1270](https://github.com/Vanessa219/vditor/issues/1270) 切换编辑模式 SV 脚注缩进丢失 `修复缺陷`
+* [1274](https://github.com/Vanessa219/vditor/issues/1274) XSS 安全漏洞 `修复缺陷`
+* [1269](https://github.com/Vanessa219/vditor/issues/1269) 代码块自动补全会包含链接引用和脚注 `修复缺陷`
+* [1263](https://github.com/Vanessa219/vditor/issues/1263) 所见即所得和即使渲染只有空格输入时，不会触发 input 事件 `修复缺陷`
+* [1264](https://github.com/Vanessa219/vditor/issues/1264) 链接中，会强制将&reg解析为 ® 字符 `修复缺陷`
+* [1242](https://github.com/Vanessa219/vditor/issues/1242) 在即时渲染模式下表格源文件未对齐 `改进功能`
 
 ### v3.8.15 / 2022-05-24
 
