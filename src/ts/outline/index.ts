@@ -26,7 +26,7 @@ export class Outline {
 
     public toggle(vditor: IVditor, show = true) {
         const btnElement = vditor.toolbar.elements.outline?.firstElementChild;
-        if (show && window.innerWidth >= Constants.MOBILE_WIDTH) {
+        if (show) {
             this.element.style.display = "block";
             this.render(vditor);
             btnElement?.classList.add("vditor-menu--current");
