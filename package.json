@@ -1,8 +1,8 @@
 {
-  "name": "vditor",
-  "version": "3.8.17",
+  "name": "vscode-vditor",
+  "version": "3.8.18",
   "description": "♏ 易于使用的 Markdown 编辑器，为适配不同的应用场景而生",
-  "author": "Vanessa <v@b3log.org> (http://vanessa.b3log.org)",
+  "author": "cweijan",
   "homepage": "https://b3log.org/vditor",
   "jsdelivr": "dist/index.min.js",
   "main": "dist/index.min.js",
