@@ -42,16 +42,6 @@ module.exports = {
             },
           },
           {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: [
-                  ['autoprefixer', {grid: true, remove: false}],
-                ],
-              },
-            },
-          },
-          {
             loader: 'less-loader', // compiles Less to CSS
           },
         ],
