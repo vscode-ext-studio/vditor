@@ -63,6 +63,7 @@ window.vditor = new Vditor('vditor', {
     position: 'right',
   },
   debugger: true,
+  cdn:"http://localhost:3000/",
   typewriterMode: true,
   placeholder: 'Hello, Vditor!',
   preview: {
