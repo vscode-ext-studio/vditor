@@ -115,6 +115,7 @@ export const previewRender = async (previewElement: HTMLDivElement, markdown: st
     highlightRender(mergedOptions.hljs, previewElement, mergedOptions.cdn);
     mathRender(previewElement, {
         cdn: mergedOptions.cdn,
+        extPath: mergedOptions.extPath,
         math: mergedOptions.math,
     });
     mermaidRender(previewElement, mergedOptions.cdn, mergedOptions.mode);

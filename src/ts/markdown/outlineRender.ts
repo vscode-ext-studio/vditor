@@ -57,6 +57,7 @@ export const outlineRender = (contentElement: HTMLElement, targetElement: Elemen
     if (vditor) {
         mathRender(targetElement as HTMLElement, {
             cdn: vditor.options.cdn,
+            extPath: vditor.options.extPath,
             math: vditor.options.preview.math,
         });
     }

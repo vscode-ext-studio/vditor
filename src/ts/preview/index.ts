@@ -228,11 +228,13 @@ export class Preview {
             item.innerHTML = tocHTML;
             mathRender(item, {
                 cdn: vditor.options.cdn,
+                extPath: vditor.options.extPath,
                 math: vditor.options.preview.math,
             });
         });
         mathRender(vditor.preview.element.lastElementChild as HTMLElement, {
             cdn: vditor.options.cdn,
+            extPath: vditor.options.extPath,
             math: vditor.options.preview.math,
         });
     }

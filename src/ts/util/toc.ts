@@ -16,6 +16,7 @@ export const renderToc = (vditor: IVditor) => {
         item.innerHTML = tocHTML;
         mathRender(item, {
             cdn: vditor.options.cdn,
+            extPath: vditor.options.extPath,
             math: vditor.options.preview.math,
         });
     });

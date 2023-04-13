@@ -40,7 +40,7 @@ export const processCodeRender = (previewPanel: HTMLElement, vditor: IVditor) =>
     } else if (language === "graphviz") {
         graphvizRender(previewPanel, vditor.options.cdn);
     } else if (language === "math") {
-        mathRender(previewPanel, {cdn: vditor.options.cdn, math: vditor.options.preview.math});
+        mathRender(previewPanel, {cdn: vditor.options.cdn,extPath: vditor.options.extPath, math: vditor.options.preview.math});
     } else {
         highlightRender(Object.assign({}, vditor.options.preview.hljs), previewPanel, vditor.options.cdn);
         codeRender(previewPanel);
