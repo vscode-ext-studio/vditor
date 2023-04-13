@@ -161,6 +161,7 @@ export const mathRender = (element: HTMLElement, options?: { cdn?: string, math?
                         mathElement.innerHTML = katex.renderToString(math, {
                             displayMode: mathElement.tagName === "DIV",
                             strict: false,
+                            throwOnError: false,
                             output: "html",
                         });
                     } catch (e) {
