@@ -51,6 +51,16 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
 
     fixHR(range);
 
+    // 对有子工具栏的块上移
+    if (matchHotKey("^⌘i", event)) {
+        moveUp(range,vditor)
+    }
+
+    // 对有子工具栏的块下移
+    if (matchHotKey("^⌘j", event)) {
+        moveDown(range,vditor)
+    }
+
     // 仅处理以下快捷键操作
     if (event.key !== "Enter" && event.key !== "Tab" && event.key !== "Backspace" && event.key.indexOf("Arrow") === -1
         && !isCtrl(event) && event.key !== "Escape" && event.key !== "Delete") {
