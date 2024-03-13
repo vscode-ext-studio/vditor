@@ -52,12 +52,12 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     fixHR(range);
 
     // 对有子工具栏的块上移
-    if (matchHotKey("^⌘i", event)) {
+    if (matchHotKey("!+i", event)) {
         moveUp(range,vditor)
     }
 
     // 对有子工具栏的块下移
-    if (matchHotKey("^⌘j", event)) {
+    if (matchHotKey("!+j", event)) {
         moveDown(range,vditor)
     }
 

@@ -59,13 +59,13 @@ export const matchHotKey = (hotKey: string, event: KeyboardEvent) => {
 
 export function matchHotkeyNew(hotkey: string, event: KeyboardEvent) {
 
-    const matchAlt = hotkey.match(/!/) != null == event.altKey
+        const matchAlt = hotkey.match(/!/) != null == event.altKey
     const matchMeta = hotkey.match(/⌘/) != null == event.metaKey
     const matchCtrl = hotkey.match(/\^/) != null == event.ctrlKey
     const matchShifter = hotkey.match(/\+/) != null == event.shiftKey
 
     if (matchAlt && matchCtrl && matchShifter && matchMeta) {
-        return hotkey.match(new RegExp(`\\b${event.key}\\b`, "i"))
+        return hotkey.match(new RegExp(`\\b${event.code.replace('Key','')}\\b`, "i"))
     }
 
 }
