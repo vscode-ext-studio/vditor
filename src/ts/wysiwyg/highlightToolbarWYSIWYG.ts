@@ -1131,9 +1131,7 @@ export function moveDown(range: Range, vditor: IVditor) {
 
 export function moveUp(range: Range, vditor: IVditor) {
     const element = tryGetElement(range);
-    console.log(element)
     const previousElement = element.previousElementSibling;
-    console.log(previousElement)
     if (!previousElement || (!element.parentElement.isEqualNode(vditor.wysiwyg.element) && element.tagName !== "LI")) {
         return;
     }
