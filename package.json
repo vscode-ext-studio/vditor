@@ -63,7 +63,7 @@
     "test": "jest --coverage",
     "start": "webpack serve --config webpack.start.js",
     "build": "webpack --progress",
-    "buildAndMove":"npm run build && cp dist/index.min.js ../resource/vditor/vditor.js"
+    "buildAndCopy":"npm run build && cp dist/index.min.js ../resource/vditor/vditor.js"
   },
   "keywords": [
     "editor",
