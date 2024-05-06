@@ -52,13 +52,15 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     fixHR(range);
 
     // 对有子工具栏的块上移
-    if (matchHotKey("!+i", event)) {
+    if (matchHotKey("^⌘i", event)) {
         moveUp(range,vditor)
+        event.stopPropagation()
     }
 
     // 对有子工具栏的块下移
-    if (matchHotKey("!+j", event)) {
+    if (matchHotKey("^⌘j", event)) {
         moveDown(range,vditor)
+        event.stopPropagation()
     }
 
     // 仅处理以下快捷键操作
@@ -225,15 +227,16 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         return true;
     }
 
-    // TODO 修改快捷键
     // 对有子工具栏的块上移
     if (matchHotKey("^!i", event)) {
         moveUp(range,vditor)
+        event.stopPropagation()
     }
 
     // 对有子工具栏的块下移
     if (matchHotKey("^!j", event)) {
         moveDown(range,vditor)
+        event.stopPropagation()
     }
 
     if (fixTab(vditor, range, event)) {
