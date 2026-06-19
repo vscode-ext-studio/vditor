@@ -9,7 +9,6 @@
   "files": [
     "dist/*",
     "src/index.ts",
-    "src/method.ts",
     "src/ts/*",
     "src/assets/*"
   ],
@@ -41,7 +40,7 @@
   "scripts": {
     "lint": "eslint --fix --ext src/**/*.ts",
     "dev": "vite --mode development",
-    "build": "vite build --mode production && VDITOR_BUILD=method vite build --mode production && tsc --emitDeclarationOnly",
+    "build": "vite build --mode production",
     "buildAndCopy": "yarn build && cp dist/index.min.js ../resource/vditor/vditor.js"
   },
   "keywords": [

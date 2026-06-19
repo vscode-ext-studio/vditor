@@ -474,15 +474,15 @@ xhr.send(JSON.stringify({url: src})); // src is the address of the image outside
 
 #### static methods
 
-* When no editing operation is required, just introduce [`method.min.js`](https://unpkg.com/vditor/dist/) and directly call
+* When no editing operation is required, static methods can be called directly
 
 ```js
 Vditor.mermaidRender(document)
 ```
 
 ```js
-import VditorPreview from 'vditor/dist/method.min'
-VditorPreview.mermaidRender(document)
+import Vditor from 'vditor'
+Vditor.mermaidRender(document)
 ```
 
 * When you need to render Markdown on the page, you can directly call the `preview` method with the following parameters:
@@ -509,8 +509,6 @@ options?: IPreviewOptions {
   renderers?: ILuteRender; // Custom rendering method https://ld246.com/article/1588412297062
 }
 ```
-
-* ⚠️`method.min.js` and` index.min.js` cannot be introduced at the same time
 
 |   | Explanation |
 | - | - |

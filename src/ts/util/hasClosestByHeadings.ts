@@ -1,4 +1,4 @@
-// NOTE: 减少 method.ts 打包，故从 hasClosest.ts 中拆分
+// NOTE: 从 hasClosest.ts 中拆分
 export const hasClosestByTag = (element: Node, nodeName: string) => {
     if (!element) {
         return false;

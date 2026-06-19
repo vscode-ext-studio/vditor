@@ -521,15 +521,15 @@ if (xhr.status === 200) {
 
 #### static methods
 
-* 不需要进行编辑操作时，仅需引入 [`method.min.js`](https://unpkg.com/vditor/dist/) 后如下直接调用
+* 不需要进行编辑操作时，可直接调用静态方法
 
 ```js
 Vditor.mermaidRender(document)
 ```
 
 ```js
-import VditorPreview from 'vditor/dist/method.min'
-VditorPreview.mermaidRender(document)
+import Vditor from 'vditor'
+Vditor.mermaidRender(document)
 ```
 
 * 需要对页面中的 Markdown 进行渲染时可直接调用 `preview` 方法，参数如下：
@@ -557,8 +557,6 @@ options?: IPreviewOptions {
   renderers?: ILuteRender; // 自定义渲染 https://ld246.com/article/1588412297062
 }
 ```
-
-* ⚠️ `method.min.js`  和 `index.min.js` 不可同时引入
 
 |   | 说明 |
 | - | - |

@@ -5,7 +5,6 @@ import pkg from "./package.json";
 
 export default defineConfig(({mode}) => {
   const dest = mode === "development" ? "dist" : ".";
-  const isMethodBuild = process.env.VDITOR_BUILD === "method";
 
   return {
     define: {
@@ -24,13 +23,12 @@ export default defineConfig(({mode}) => {
     },
     build: {
       outDir: "dist",
-      emptyOutDir: !isMethodBuild,
       target: "es2015",
       lib: {
-        entry: resolve(__dirname, isMethodBuild ? "src/method.ts" : "src/index.ts"),
+        entry: resolve(__dirname, "src/index.ts"),
         formats: ["umd"],
         name: "Vditor",
-        fileName: () => (isMethodBuild ? "method.min.js" : "index.min.js"),
+        fileName: () => "index.min.js",
       },
       rolldownOptions: {
         output: {
@@ -40,18 +38,14 @@ export default defineConfig(({mode}) => {
       },
     },
     plugins: [
-      ...(mode === "production" && isMethodBuild
-        ? []
-        : [
-            viteStaticCopy({
-              targets: [
-                {src: "src/css", dest},
-                {src: "src/images", dest},
-                {src: "src/js", dest},
-                {src: "types", dest},
-              ],
-            }),
-          ]),
+      viteStaticCopy({
+        targets: [
+          {src: "src/css", dest},
+          {src: "src/images", dest},
+          {src: "src/js", dest},
+          {src: "types", dest},
+        ],
+      }),
     ],
   };
 });
