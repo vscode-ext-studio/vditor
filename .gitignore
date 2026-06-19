@@ -3,7 +3,6 @@
 /dist
 /node_modules
 /demo/dist
-/coverage
 .vscode/*
 package-lock.json
 yarn.lock
