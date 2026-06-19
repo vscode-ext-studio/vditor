@@ -3,6 +3,7 @@
     "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "esnext",
+    "moduleResolution": "node",
     "target": "es5",
     "noUnusedLocals": false,
     "lib": [
@@ -12,13 +13,15 @@
     "typeRoots": [
       "./node_modules/@types"
     ],
-    "types": [
-      "./types"
-    ],
     "declaration": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": [
     "src"
+  ],
+  "files": [
+    "types/index.d.ts"
   ],
   "exclude": [
     "node_modules",
