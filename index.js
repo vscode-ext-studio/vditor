@@ -54,7 +54,7 @@ window.vditor = new Vditor('vditor', {
   extPath: rootPath,
   toolbar,
   mode: 'wysiwyg',
-  height: window.innerHeight + 100,
+  height: document.querySelector('.demo-editor').clientHeight,
   cache: {
     enable: true,
   },
