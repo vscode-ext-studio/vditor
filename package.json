@@ -1,12 +1,11 @@
 {
   "name": "vscode-vditor",
-  "version": "3.8.19",
+  "version": "4.0.0",
   "description": "♏ 易于使用的 Markdown 编辑器，为适配不同的应用场景而生",
   "author": "cweijan",
   "homepage": "https://github.com/vscode-ext-studio/vditor",
   "jsdelivr": "dist/index.min.js",
   "main": "dist/index.min.js",
-  "funding": "https://ld246.com/sponsor",
   "files": [
     "dist/*",
     "src/index.ts",
@@ -20,32 +19,28 @@
   "types": "dist/index.d.ts",
   "devDependencies": {
     "@types/diff-match-patch": "1.0.32",
-    "@types/node": "^17.0.19",
+    "@types/node": "^25.9.3",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
     "eslint": "^8.9.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "less": "^4.1.2",
-    "prettier": "^2.5.1",
-    "terser": "^5.37.0",
-    "typescript": "^5.7.0",
-    "vite": "^6.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
     "vite-plugin-static-copy": "^2.2.0"
   },
   "license": "MIT",
-  "repository": "git://github.com/Vanessa219/vditor.git",
+  "repository": "git@github.com:vscode-ext-studio/vditor.git",
   "bugs": {
-    "url": "https://github.com/Vanessa219/vditor/issues"
+    "url": "https://github.com/vscode-ext-studio/vditor/issues"
   },
   "scripts": {
     "lint": "eslint --fix --ext src/**/*.ts",
-    "start": "vite --config vite.demo.config.ts",
-    "build": "vite build && VDITOR_BUILD=method vite build && tsc --emitDeclarationOnly",
+    "dev": "vite --mode development",
+    "build": "vite build --mode production && VDITOR_BUILD=method vite build --mode production && tsc --emitDeclarationOnly",
     "buildAndCopy": "yarn build && cp dist/index.min.js ../resource/vditor/vditor.js"
   },
   "keywords": [
     "editor",
     "markdown",
-    "b3log"
+    "vditor"
   ]
 }
