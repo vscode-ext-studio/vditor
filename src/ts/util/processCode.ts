@@ -8,6 +8,7 @@ import {mathRender} from "../markdown/mathRender";
 import {mermaidRender} from "../markdown/mermaidRender";
 import {mindmapRender} from "../markdown/mindmapRender";
 import {plantumlRender} from "../markdown/plantumlRender";
+import {isWysiwygCmCodeBlock, renderWysiwygCodeBlocks} from "../codeBlock/codeMirrorManager";
 
 export const processPasteCode = (html: string, text: string, type = "sv") => {
     return false;
@@ -18,6 +19,11 @@ export const processCodeRender = (previewPanel: HTMLElement, vditor: IVditor) =>
         return;
     }
     if (previewPanel.parentElement.getAttribute("data-type") === "html-block") {
+        previewPanel.setAttribute("data-render", "1");
+        return;
+    }
+    if (vditor.currentMode === "wysiwyg" && isWysiwygCmCodeBlock(previewPanel.parentElement as HTMLElement)) {
+        renderWysiwygCodeBlocks(vditor);
         previewPanel.setAttribute("data-render", "1");
         return;
     }

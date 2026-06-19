@@ -3,6 +3,7 @@ import {removeCurrentToolbar} from "../toolbar/setToolbar";
 import {listToggle} from "../util/fixBrowserBehavior";
 import {hasClosestBlock, hasClosestByMatchTag} from "../util/hasClosest";
 import {processCodeRender} from "../util/processCode";
+import {renderWysiwygCodeBlocks} from "../codeBlock/codeMirrorManager";
 import {getEditorRange, setRangeByWbr, setSelectionFocus} from "../util/selection";
 import {afterRenderEvent} from "./afterRenderEvent";
 import {genAPopover, highlightToolbarWYSIWYG} from "./highlightToolbarWYSIWYG";
@@ -208,6 +209,7 @@ export const toolbarEvent = (vditor: IVditor, actionBtn: Element, event: Event) 
                 (item: HTMLElement) => {
                     processCodeRender(item, vditor);
                 });
+            renderWysiwygCodeBlocks(vditor);
             actionBtn.classList.add("vditor-menu--disabled");
         } else if (commandName === "link") {
             if (range.toString() === "") {

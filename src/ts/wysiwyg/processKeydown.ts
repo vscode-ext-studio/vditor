@@ -1,4 +1,11 @@
 import {Constants} from "../constants";
+import {
+    focusWysiwygCodeMirror,
+    getWysiwygCodeMirrorView,
+    hasWysiwygCodeMirror,
+    isInsideWysiwygCodeMirror,
+    isWysiwygCmCodeBlock,
+} from "../codeBlock/codeMirrorManager";
 import {isCtrl, isFirefox} from "../util/compatibility";
 import {scrollCenter} from "../util/editorCommonEvent";
 import {
@@ -25,12 +32,28 @@ import {afterRenderEvent} from "./afterRenderEvent";
 import { moveDown, moveUp } from "./highlightToolbarWYSIWYG";
 import {nextIsCode} from "./inlineTag";
 import {removeHeading, setHeading} from "./setHeading";
-import {showCode} from "./showCode";
+import {focusWysiwygCodeBlock, showCode} from "./showCode";
 
 export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     // Chrome firefox 触发 compositionend 机制不一致 https://github.com/Vanessa219/vditor/issues/188
     vditor.wysiwyg.composingLock = event.isComposing;
     if (event.isComposing) {
+        return false;
+    }
+
+    if (isInsideWysiwygCodeMirror(event.target)) {
+        const codeRenderElement = (event.target as HTMLElement).closest("[data-type='code-block']") as HTMLElement;
+        if (event.key === "Escape" && codeRenderElement) {
+            vditor.wysiwyg.popover.style.display = "none";
+            getWysiwygCodeMirrorView(codeRenderElement)?.contentDOM.blur();
+            event.preventDefault();
+            return true;
+        }
+        if (!isCtrl(event) && !event.shiftKey && event.altKey && event.key === "Enter" && codeRenderElement) {
+            focusWysiwygCodeMirror(codeRenderElement, false, vditor);
+            event.preventDefault();
+            return true;
+        }
         return false;
     }
 
@@ -90,18 +113,30 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     // code render
     const codeRenderElement = hasClosestByClassName(startContainer, "vditor-wysiwyg__block");
     if (codeRenderElement) {
-        // esc: 退出编辑，仅展示渲染
-        if (event.key === "Escape" && codeRenderElement.children.length === 2) {
+        // esc: 退出编辑
+        if (event.key === "Escape" && codeRenderElement.getAttribute("data-type") === "code-block") {
             vditor.wysiwyg.popover.style.display = "none";
-            (codeRenderElement.firstElementChild as HTMLElement).style.display = "none";
-            vditor.wysiwyg.element.blur();
-            event.preventDefault();
-            return true;
+            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
+                getWysiwygCodeMirrorView(codeRenderElement)?.contentDOM.blur();
+                event.preventDefault();
+                return true;
+            }
+            if (codeRenderElement.children.length === 2) {
+                (codeRenderElement.firstElementChild as HTMLElement).style.display = "none";
+                vditor.wysiwyg.element.blur();
+                event.preventDefault();
+                return true;
+            }
         }
 
         // alt+enter: 代码块切换到语言 https://github.com/Vanessa219/vditor/issues/54
         if (!isCtrl(event) && !event.shiftKey && event.altKey && event.key === "Enter" &&
             codeRenderElement.getAttribute("data-type") === "code-block") {
+            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
+                focusWysiwygCodeMirror(codeRenderElement, false, vditor);
+                event.preventDefault();
+                return true;
+            }
             const inputElemment = (vditor.wysiwyg.popover.querySelector(".vditor-input") as HTMLInputElement);
             inputElemment.focus();
             inputElemment.select();
@@ -110,6 +145,9 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         }
 
         if (codeRenderElement.getAttribute("data-block") === "0") {
+            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
+                return false;
+            }
             if (fixCodeBlock(vditor, event, codeRenderElement.firstElementChild as HTMLElement, range)) {
                 return true;
             }
@@ -276,7 +314,11 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
                 if ((rangeStart === 0 && range.startOffset === 0) || // https://github.com/Vanessa219/vditor/issues/894
                     (rangeStart === 1 && blockElement.innerText.startsWith(Constants.ZWSP))) {
                     // 当前块删除后光标落于代码渲染块上，当前块会被删除，因此需要阻止事件，不能和 keyup 中的代码块处理合并
-                    showCode(blockElement.previousElementSibling.lastElementChild as HTMLElement, vditor, false);
+                    const prevBlock = blockElement.previousElementSibling as HTMLElement;
+                    const prevPreview = prevBlock?.lastElementChild as HTMLElement;
+                    if (!focusWysiwygCodeBlock(prevBlock, vditor, false) && prevPreview) {
+                        showCode(prevPreview, vditor, false);
+                    }
                     if (blockElement.innerHTML.trim().replace(Constants.ZWSP, "") === "") {
                         // 当前块为空且不是最后一个时，需要删除
                         blockElement.remove();

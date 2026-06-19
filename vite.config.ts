@@ -1,9 +1,9 @@
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+import {resolve} from "path";
+import {defineConfig} from "vite";
+import {viteStaticCopy} from "vite-plugin-static-copy";
 import pkg from "./package.json";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({mode}) => {
   const dest = mode === "development" ? "dist" : ".";
   const isMethodBuild = process.env.VDITOR_BUILD === "method";
 
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 3135,
-      host: "127.0.0.1"
+      host: "127.0.0.1",
     },
     build: {
       outDir: "dist",
@@ -43,15 +43,15 @@ export default defineConfig(({ mode }) => {
       ...(mode === "production" && isMethodBuild
         ? []
         : [
-          viteStaticCopy({
-            targets: [
-              { src: "src/css", dest },
-              { src: "src/images", dest },
-              { src: "src/js", dest },
-              { src: "types", dest },
-            ],
-          }),
-        ]),
+            viteStaticCopy({
+              targets: [
+                {src: "src/css", dest},
+                {src: "src/images", dest},
+                {src: "src/js", dest},
+                {src: "types", dest},
+              ],
+            }),
+          ]),
     ],
   };
 });

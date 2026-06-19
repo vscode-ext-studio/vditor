@@ -1,4 +1,5 @@
 import {diff_match_patch, patch_obj} from "diff-match-patch";
+import {isInsideWysiwygCodeMirror} from "../codeBlock/codeMirrorManager";
 import {disableToolbar, enableToolbar, hidePanel} from "../toolbar/setToolbar";
 import {isFirefox, isSafari} from "../util/compatibility";
 import {scrollCenter} from "../util/editorCommonEvent";
@@ -217,7 +218,8 @@ class Undo {
         let cloneRange: Range;
         if (getSelection().rangeCount !== 0 && !vditor[vditor.currentMode].element.querySelector("wbr")) {
             const range = getSelection().getRangeAt(0);
-            if (vditor[vditor.currentMode].element.contains(range.startContainer)) {
+            if (vditor[vditor.currentMode].element.contains(range.startContainer) &&
+                !(vditor.currentMode === "wysiwyg" && isInsideWysiwygCodeMirror(range.startContainer))) {
                 cloneRange = range.cloneRange();
                 const wbrElement = document.createElement("span");
                 wbrElement.className = "vditor-wbr";

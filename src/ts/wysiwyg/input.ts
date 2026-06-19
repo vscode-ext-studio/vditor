@@ -5,6 +5,11 @@ import {
 import { hasClosestByTag } from "../util/hasClosestByHeadings";
 import { log } from "../util/log";
 import { processCodeRender } from "../util/processCode";
+import {
+    deactivateAllWysiwygCodeMirrors,
+    isWysiwygCmCodeBlock,
+    renderWysiwygCodeBlocks,
+} from "../codeBlock/codeMirrorManager";
 import { setRangeByWbr } from "../util/selection";
 import { renderToc } from "../util/toc";
 import { afterRenderEvent } from "./afterRenderEvent";
@@ -159,6 +164,7 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
         //     </li>
         // </ol>
         // console.log(oldHtml)
+        deactivateAllWysiwygCodeMirrors(vditor);
         html = vditor.lute.SpinVditorDOM(html);
         log("SpinVditorDOM", html, "result", vditor.options.debugger);
 
@@ -217,9 +223,13 @@ export const input = (vditor: IVditor, range: Range, event?: InputEvent) => {
 
         // 设置光标
         setRangeByWbr(vditor.wysiwyg.element, range);
+        renderWysiwygCodeBlocks(vditor);
 
         vditor.wysiwyg.element.querySelectorAll(".vditor-wysiwyg__preview[data-render='2']")
             .forEach((item: HTMLElement) => {
+                if (isWysiwygCmCodeBlock(item.parentElement as HTMLElement)) {
+                    return;
+                }
                 processCodeRender(item, vditor);
             });
 

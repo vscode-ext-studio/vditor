@@ -27,7 +27,8 @@ import {afterRenderEvent} from "./afterRenderEvent";
 import {genImagePopover, genLinkRefPopover, highlightToolbarWYSIWYG} from "./highlightToolbarWYSIWYG";
 import {getRenderElementNextNode, modifyPre} from "./inlineTag";
 import {input} from "./input";
-import {showCode} from "./showCode";
+import {isInsideWysiwygCodeMirror, isWysiwygCmCodeBlock} from "../codeBlock/codeMirrorManager";
+import {focusWysiwygCodeBlock, showCode} from "./showCode";
 import {getMarkdown} from "../markdown/getMarkdown";
 
 class WYSIWYG {
@@ -317,6 +318,9 @@ class WYSIWYG {
         });
 
         this.element.addEventListener("compositionend", (event: InputEvent) => {
+            if (isInsideWysiwygCodeMirror(event.target)) {
+                return;
+            }
             const headingElement = hasClosestByHeadings(getSelection().getRangeAt(0).startContainer);
             if (headingElement && headingElement.textContent === "") {
                 // heading 为空删除 https://github.com/Vanessa219/vditor/issues/150
@@ -330,6 +334,9 @@ class WYSIWYG {
         });
 
         this.element.addEventListener("input", (event: InputEvent) => {
+            if (isInsideWysiwygCodeMirror(event.target)) {
+                return;
+            }
             if (event.inputType === "deleteByDrag" || event.inputType === "insertFromDrop") {
                 // https://github.com/Vanessa219/vditor/issues/801 编辑器内容拖拽问题
                 return;
@@ -446,14 +453,24 @@ class WYSIWYG {
 
             highlightToolbarWYSIWYG(vditor);
 
-            // 点击后光标落于预览区，需展开代码块
+            const cmBlock = (event.target as HTMLElement).closest?.("[data-type='code-block']") as HTMLElement;
+            if (isWysiwygCmCodeBlock(cmBlock)) {
+                focusWysiwygCodeBlock(cmBlock, vditor);
+                clickToc(event, vditor);
+                return;
+            }
+
+            // 点击后光标落于预览区，需展开代码块（仅特殊语言块）
             let previewElement = hasClosestByClassName(event.target, "vditor-wysiwyg__preview");
             if (!previewElement) {
                 previewElement =
                     hasClosestByClassName(getEditorRange(vditor).startContainer, "vditor-wysiwyg__preview");
             }
             if (previewElement) {
-                showCode(previewElement, vditor);
+                const blockElement = previewElement.closest("[data-type='code-block']") as HTMLElement;
+                if (!focusWysiwygCodeBlock(blockElement, vditor)) {
+                    showCode(previewElement, vditor);
+                }
             }
 
             clickToc(event, vditor);
@@ -461,6 +478,9 @@ class WYSIWYG {
 
         this.element.addEventListener("keyup", (event: KeyboardEvent & { target: HTMLElement }) => {
             if (event.isComposing || isCtrl(event)) {
+                return;
+            }
+            if (isInsideWysiwygCodeMirror(event.target)) {
                 return;
             }
             // 除 md 处理、cell 内换行、table 添加新行/列、代码块语言切换、block render 换行、跳出/逐层跳出 blockquote、h6 换行、
@@ -510,6 +530,16 @@ class WYSIWYG {
             if (!previewElement) {
                 return;
             }
+            const blockElement = previewElement.closest("[data-type='code-block']") as HTMLElement;
+            if (isWysiwygCmCodeBlock(blockElement)) {
+                if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                    focusWysiwygCodeBlock(blockElement, vditor, true);
+                } else if (event.key === "ArrowUp" || event.key === "ArrowLeft" || event.key === "Backspace") {
+                    focusWysiwygCodeBlock(blockElement, vditor, false);
+                }
+                event.preventDefault();
+                return;
+            }
             const previousElement = previewElement.previousElementSibling as HTMLElement;
             if (previousElement.style.display === "none") {
                 if (event.key === "ArrowDown" || event.key === "ArrowRight") {
@@ -529,23 +559,21 @@ class WYSIWYG {
                 const blockRenderElement = previewElement.parentElement;
                 let nextNode = getRenderElementNextNode(blockRenderElement) as HTMLElement;
                 if (nextNode && nextNode.nodeType !== 3) {
-                    // 下一节点依旧为代码渲染块
                     const nextRenderElement = nextNode.querySelector(".vditor-wysiwyg__preview") as HTMLElement;
                     if (nextRenderElement) {
-                        showCode(nextRenderElement, vditor);
+                        const nextBlock = nextRenderElement.closest("[data-type='code-block']") as HTMLElement;
+                        if (!focusWysiwygCodeBlock(nextBlock, vditor)) {
+                            showCode(nextRenderElement, vditor);
+                        }
                         return;
                     }
                 }
-                // 跳过渲染块，光标移动到下一个节点
                 if (nextNode.nodeType === 3) {
-                    // inline
                     while (nextNode.textContent.length === 0 && nextNode.nextSibling) {
-                        // https://github.com/Vanessa219/vditor/issues/100 2
                         nextNode = nextNode.nextSibling as HTMLElement;
                     }
                     range.setStart(nextNode, 1);
                 } else {
-                    // block
                     range.setStart(nextNode.firstChild, 0);
                 }
             } else {

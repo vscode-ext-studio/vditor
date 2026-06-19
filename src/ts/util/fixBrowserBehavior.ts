@@ -1,4 +1,5 @@
 import {Constants} from "../constants";
+import {isWysiwygCmCodeBlock} from "../codeBlock/codeMirrorManager";
 import {input as IRInput} from "../ir/input";
 import {processAfterRender} from "../ir/process";
 import {processAfterRender as processSVAfterRender, processPaste} from "../sv/process";
@@ -286,7 +287,8 @@ export const listIndent = (vditor: IVditor, liElement: HTMLElement, range: Range
             tempTopListElement.querySelectorAll(`.vditor-${vditor.currentMode}__preview[data-render='2']`)
                 .forEach((item: HTMLElement) => {
                     processCodeRender(item, vditor);
-                    if (vditor.currentMode === "wysiwyg") {
+                    if (vditor.currentMode === "wysiwyg" &&
+                        !isWysiwygCmCodeBlock(item.parentElement as HTMLElement)) {
                         item.previousElementSibling.setAttribute("style", "display:none");
                     }
                 });
@@ -355,7 +357,8 @@ export const listOutdent = (vditor: IVditor, liElement: HTMLElement, range: Rang
             tempTopListElement.querySelectorAll(`.vditor-${vditor.currentMode}__preview[data-render='2']`)
                 .forEach((item: HTMLElement) => {
                     processCodeRender(item, vditor);
-                    if (vditor.currentMode === "wysiwyg") {
+                    if (vditor.currentMode === "wysiwyg" &&
+                        !isWysiwygCmCodeBlock(item.parentElement as HTMLElement)) {
                         item.previousElementSibling.setAttribute("style", "display:none");
                     }
                 });
