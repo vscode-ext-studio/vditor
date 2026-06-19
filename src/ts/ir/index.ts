@@ -16,6 +16,11 @@ import {
     setSelectionFocus,
 } from "../util/selection";
 import {clickToc} from "../util/toc";
+import {
+    focusCodeBlock,
+    isCmCodeBlock,
+    isInsideCodeMirror,
+} from "../codeBlock/codeMirrorManager";
 import {expandMarker} from "./expandMarker";
 import {highlightToolbarIR} from "./highlightToolbarIR";
 import {input} from "./input";
@@ -79,6 +84,9 @@ class IR {
         });
 
         this.element.addEventListener("compositionend", (event: InputEvent) => {
+            if (isInsideCodeMirror(event.target)) {
+                return;
+            }
             if (!isFirefox()) {
                 input(vditor, getSelection().getRangeAt(0).cloneRange());
             }
@@ -86,6 +94,9 @@ class IR {
         });
 
         this.element.addEventListener("input", (event: InputEvent) => {
+            if (isInsideCodeMirror(event.target)) {
+                return;
+            }
             if (event.inputType === "deleteByDrag" || event.inputType === "insertFromDrop") {
                 // https://github.com/Vanessa219/vditor/issues/801 编辑器内容拖拽问题
                 return;
@@ -119,22 +130,32 @@ class IR {
 
             const range = getEditorRange(vditor);
 
-            // 点击后光标落于预览区
+            const cmBlock = (event.target as HTMLElement).closest?.("[data-type='code-block']") as HTMLElement;
+            if (isCmCodeBlock(cmBlock)) {
+                focusCodeBlock(cmBlock, vditor);
+                clickToc(event, vditor);
+                highlightToolbarIR(vditor);
+                return;
+            }
+
+            // 点击后光标落于预览区（仅特殊语言块）
             let previewElement = hasClosestByClassName(event.target, "vditor-ir__preview");
             if (!previewElement) {
                 previewElement = hasClosestByClassName(
                     range.startContainer, "vditor-ir__preview");
             }
             if (previewElement) {
-                if (previewElement.previousElementSibling.firstElementChild) {
-                    range.selectNodeContents(previewElement.previousElementSibling.firstElementChild);
-                } else {
-                    // 行内数学公式
-                    range.selectNodeContents(previewElement.previousElementSibling);
+                const blockElement = previewElement.closest("[data-type='code-block']") as HTMLElement;
+                if (!focusCodeBlock(blockElement, vditor) && previewElement.previousElementSibling) {
+                    if (previewElement.previousElementSibling.firstElementChild) {
+                        range.selectNodeContents(previewElement.previousElementSibling.firstElementChild);
+                    } else {
+                        range.selectNodeContents(previewElement.previousElementSibling);
+                    }
+                    range.collapse(true);
+                    setSelectionFocus(range);
+                    scrollCenter(vditor);
                 }
-                range.collapse(true);
-                setSelectionFocus(range);
-                scrollCenter(vditor);
             }
 
             // 点击图片光标选中图片地址
@@ -184,6 +205,9 @@ class IR {
             if (event.isComposing || isCtrl(event)) {
                 return;
             }
+            if (isInsideCodeMirror(event.target)) {
+                return;
+            }
             if (event.key === "Enter") {
                 scrollCenter(vditor);
             }
@@ -224,6 +248,16 @@ class IR {
             const previewRenderElement = hasClosestByClassName(range.startContainer, "vditor-ir__preview");
 
             if (previewRenderElement) {
+                const blockElement = previewRenderElement.closest("[data-type='code-block']") as HTMLElement;
+                if (isCmCodeBlock(blockElement)) {
+                    if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+                        focusCodeBlock(blockElement, vditor, true);
+                    } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+                        focusCodeBlock(blockElement, vditor, false);
+                    }
+                    event.preventDefault();
+                    return true;
+                }
                 if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
                     if (previewRenderElement.previousElementSibling.firstElementChild) {
                         range.selectNodeContents(previewRenderElement.previousElementSibling.firstElementChild);

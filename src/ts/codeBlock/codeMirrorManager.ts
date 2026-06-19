@@ -5,6 +5,7 @@ import {Compartment} from "@codemirror/state";
 import {EditorView, drawSelection, keymap} from "@codemirror/view";
 import {basicSetup} from "codemirror";
 
+import {processAfterRender} from "../ir/process";
 import {afterRenderEvent} from "../wysiwyg/afterRenderEvent";
 
 const SPECIAL_LANGUAGES = [
@@ -42,15 +43,20 @@ export const isSpecialCodeLanguage = (codeElement: HTMLElement) => {
     return false;
 };
 
-export const isWysiwygCmCodeBlock = (blockElement: HTMLElement | null) => {
+export const isCmCodeBlock = (blockElement: HTMLElement | null) => {
     if (!blockElement || blockElement.getAttribute("data-type") !== "code-block") {
         return false;
     }
-    const code = blockElement.querySelector("pre.vditor-wysiwyg__pre code, pre:first-child code") as HTMLElement;
+    const code = blockElement.querySelector(
+        "pre.vditor-wysiwyg__pre code, pre.vditor-ir__marker--pre code, pre:first-child code",
+    ) as HTMLElement;
     return !!code && !isSpecialCodeLanguage(code);
 };
 
-export const isInsideWysiwygCodeMirror = (target: EventTarget | Node | null) => {
+/** @deprecated use isCmCodeBlock */
+export const isWysiwygCmCodeBlock = isCmCodeBlock;
+
+export const isInsideCodeMirror = (target: EventTarget | Node | null) => {
     if (!target) {
         return !!document.activeElement?.closest(`.${CM_BLOCK_CLASS} .cm-editor`);
     }
@@ -58,13 +64,18 @@ export const isInsideWysiwygCodeMirror = (target: EventTarget | Node | null) => 
     return !!node?.closest(`.${CM_BLOCK_CLASS} .cm-editor`);
 };
 
+/** @deprecated use isInsideCodeMirror */
+export const isInsideWysiwygCodeMirror = isInsideCodeMirror;
+
 const getLanguageName = (codeElement: HTMLElement) => {
     const match = codeElement.className.match(/language-([^\s]+)/);
     return match ? match[1] : "";
 };
 
 const getBlockParts = (blockElement: HTMLElement) => {
-    const editPre = blockElement.querySelector("pre.vditor-wysiwyg__pre, pre:first-child") as HTMLElement;
+    const editPre = blockElement.querySelector(
+        "pre.vditor-wysiwyg__pre, pre.vditor-ir__marker--pre, pre:first-child",
+    ) as HTMLElement;
     if (!editPre) {
         return null;
     }
@@ -72,13 +83,32 @@ const getBlockParts = (blockElement: HTMLElement) => {
     if (!code) {
         return null;
     }
-    const preview = blockElement.querySelector(".vditor-wysiwyg__preview") as HTMLElement;
+    const preview = blockElement.querySelector(
+        ".vditor-wysiwyg__preview, .vditor-ir__preview",
+    ) as HTMLElement;
     return {editPre, code, preview};
 };
 
-/** 普通代码块只保留隐藏的 sync code + CodeMirror，移除/隐藏 legacy 编辑与预览 DOM */
-export const prepareWysiwygCmBlockDom = (blockElement: HTMLElement) => {
-    if (!isWysiwygCmCodeBlock(blockElement)) {
+const getModeEditor = (vditor: IVditor) => {
+    if (vditor.currentMode === "wysiwyg") {
+        return vditor.wysiwyg.element;
+    }
+    if (vditor.currentMode === "ir") {
+        return vditor.ir.element;
+    }
+    return null;
+};
+
+const getCodeBlockSelector = (mode: string) => {
+    if (mode === "wysiwyg") {
+        return ".vditor-wysiwyg__block[data-type='code-block']";
+    }
+    return "[data-type='code-block']";
+};
+
+/** 普通代码块只保留隐藏的 sync code + CodeMirror，移除 legacy 预览 DOM */
+export const prepareCmBlockDom = (blockElement: HTMLElement) => {
+    if (!isCmCodeBlock(blockElement)) {
         return;
     }
     const parts = getBlockParts(blockElement);
@@ -99,6 +129,9 @@ export const prepareWysiwygCmBlockDom = (blockElement: HTMLElement) => {
     }
 };
 
+/** @deprecated use prepareCmBlockDom */
+export const prepareWysiwygCmBlockDom = prepareCmBlockDom;
+
 const loadLanguage = (languageName: string): Promise<LanguageSupport | undefined> => {
     const language = languageMap[languageName.toLowerCase()];
     if (!language) {
@@ -113,11 +146,16 @@ const loadLanguage = (languageName: string): Promise<LanguageSupport | undefined
 const scheduleSync = (binding: CodeMirrorBinding, vditor: IVditor) => {
     window.clearTimeout(binding.syncTimer);
     binding.syncTimer = window.setTimeout(() => {
-        afterRenderEvent(vditor, {
+        const options = {
             enableAddUndoStack: true,
             enableHint: false,
             enableInput: true,
-        });
+        };
+        if (vditor.currentMode === "wysiwyg") {
+            afterRenderEvent(vditor, options);
+        } else if (vditor.currentMode === "ir") {
+            processAfterRender(vditor, options);
+        }
     }, vditor.options.undoDelay);
 };
 
@@ -128,13 +166,13 @@ const syncCodeFromView = (binding: CodeMirrorBinding, vditor: IVditor) => {
 
 const syncViewFromCode = (binding: CodeMirrorBinding) => {
     const codeText = binding.syncCode.textContent || "";
-    const cmText = binding.view.state.doc.toString();
+    const cmText = binding.view.state.doc.length ? binding.view.state.doc.toString() : "";
     if (codeText === cmText) {
         return;
     }
     binding.updating = true;
     binding.view.dispatch({
-        changes: {from: 0, to: cmText.length, insert: codeText},
+        changes: {from: 0, to: binding.view.state.doc.length, insert: codeText},
     });
     binding.updating = false;
 };
@@ -154,7 +192,25 @@ const applyLanguage = (blockElement: HTMLElement, binding: CodeMirrorBinding, la
     });
 };
 
-const destroyWysiwygCodeMirror = (blockElement: HTMLElement) => {
+const cmDomEventHandlers = () => ({
+    mousedown: (event: Event) => {
+        event.stopPropagation();
+    },
+    click: (event: Event) => {
+        event.stopPropagation();
+    },
+    keydown: (event: Event) => {
+        event.stopPropagation();
+    },
+    keyup: (event: Event) => {
+        event.stopPropagation();
+    },
+    input: (event: Event) => {
+        event.stopPropagation();
+    },
+});
+
+const destroyCodeMirror = (blockElement: HTMLElement) => {
     const binding = bindings.get(blockElement);
     if (!binding) {
         return;
@@ -164,33 +220,47 @@ const destroyWysiwygCodeMirror = (blockElement: HTMLElement) => {
     binding.view.destroy();
     bindings.delete(blockElement);
     binding.editPre.querySelector(".cm-editor")?.remove();
-    prepareWysiwygCmBlockDom(blockElement);
+    prepareCmBlockDom(blockElement);
 };
 
-export const destroyAllWysiwygCodeMirrors = (vditor: IVditor) => {
-    vditor.wysiwyg.element.querySelectorAll(`.${CM_BLOCK_CLASS}`).forEach((block) => {
-        destroyWysiwygCodeMirror(block as HTMLElement);
+export const destroyAllCodeMirrors = (vditor: IVditor) => {
+    const editor = getModeEditor(vditor);
+    if (!editor) {
+        return;
+    }
+    editor.querySelectorAll(`.${CM_BLOCK_CLASS}`).forEach((block) => {
+        destroyCodeMirror(block as HTMLElement);
     });
 };
 
-/** Spin DOM 前卸载 CodeMirror，保持 sync code 隐藏，不露出 legacy 编辑区 */
-export const deactivateAllWysiwygCodeMirrors = (vditor: IVditor) => {
-    vditor.wysiwyg.element.querySelectorAll(".vditor-wysiwyg__block[data-type='code-block']").forEach((block) => {
+/** @deprecated use destroyAllCodeMirrors */
+export const destroyAllWysiwygCodeMirrors = destroyAllCodeMirrors;
+
+/** Spin DOM 前卸载 CodeMirror，保持 sync code 隐藏 */
+export const deactivateAllCodeMirrors = (vditor: IVditor) => {
+    const editor = getModeEditor(vditor);
+    if (!editor) {
+        return;
+    }
+    editor.querySelectorAll(getCodeBlockSelector(vditor.currentMode)).forEach((block) => {
         const blockElement = block as HTMLElement;
         if (bindings.has(blockElement)) {
-            destroyWysiwygCodeMirror(blockElement);
+            destroyCodeMirror(blockElement);
         } else {
-            prepareWysiwygCmBlockDom(blockElement);
+            prepareCmBlockDom(blockElement);
         }
     });
 };
 
-const mountWysiwygCodeMirror = (blockElement: HTMLElement, vditor: IVditor) => {
-    if (!isWysiwygCmCodeBlock(blockElement)) {
+/** @deprecated use deactivateAllCodeMirrors */
+export const deactivateAllWysiwygCodeMirrors = deactivateAllCodeMirrors;
+
+const mountCodeMirror = (blockElement: HTMLElement, vditor: IVditor) => {
+    if (!isCmCodeBlock(blockElement)) {
         return;
     }
 
-    prepareWysiwygCmBlockDom(blockElement);
+    prepareCmBlockDom(blockElement);
 
     const parts = getBlockParts(blockElement);
     if (!parts) {
@@ -236,23 +306,7 @@ const mountWysiwygCodeMirror = (blockElement: HTMLElement, vditor: IVditor) => {
                 }
                 syncCodeFromView(binding, vditor);
             }),
-            EditorView.domEventHandlers({
-                mousedown: (event) => {
-                    event.stopPropagation();
-                },
-                click: (event) => {
-                    event.stopPropagation();
-                },
-                keydown: (event) => {
-                    event.stopPropagation();
-                },
-                keyup: (event) => {
-                    event.stopPropagation();
-                },
-                input: (event) => {
-                    event.stopPropagation();
-                },
-            }),
+            EditorView.domEventHandlers(cmDomEventHandlers()),
         ],
     });
 
@@ -261,16 +315,20 @@ const mountWysiwygCodeMirror = (blockElement: HTMLElement, vditor: IVditor) => {
     applyLanguage(blockElement, binding, languageName);
 };
 
-export const renderWysiwygCodeBlocks = (vditor: IVditor) => {
-    if (vditor.currentMode !== "wysiwyg") {
+export const renderCodeBlocks = (vditor: IVditor) => {
+    const editor = getModeEditor(vditor);
+    if (!editor) {
         return;
     }
-    vditor.wysiwyg.element.querySelectorAll(".vditor-wysiwyg__block[data-type='code-block']").forEach((block) => {
-        mountWysiwygCodeMirror(block as HTMLElement, vditor);
+    editor.querySelectorAll(getCodeBlockSelector(vditor.currentMode)).forEach((block) => {
+        mountCodeMirror(block as HTMLElement, vditor);
     });
 };
 
-export const focusWysiwygCodeMirror = (
+/** @deprecated use renderCodeBlocks */
+export const renderWysiwygCodeBlocks = renderCodeBlocks;
+
+export const focusCodeMirror = (
     blockElement: HTMLElement,
     collapseToStart = true,
     vditor?: IVditor,
@@ -279,7 +337,7 @@ export const focusWysiwygCodeMirror = (
         return;
     }
     if (!bindings.get(blockElement) && vditor) {
-        mountWysiwygCodeMirror(blockElement, vditor);
+        mountCodeMirror(blockElement, vditor);
     }
     const binding = bindings.get(blockElement);
     if (!binding) {
@@ -300,7 +358,18 @@ export const focusWysiwygCodeMirror = (
     }
 };
 
-export const updateWysiwygCodeMirrorLanguage = (blockElement: HTMLElement, languageName: string) => {
+/** @deprecated use focusCodeMirror */
+export const focusWysiwygCodeMirror = focusCodeMirror;
+
+export const focusCodeBlock = (blockElement: HTMLElement, vditor: IVditor, collapseToStart = true) => {
+    if (!isCmCodeBlock(blockElement)) {
+        return false;
+    }
+    focusCodeMirror(blockElement, collapseToStart, vditor);
+    return true;
+};
+
+export const updateCodeMirrorLanguage = (blockElement: HTMLElement, languageName: string) => {
     const binding = bindings.get(blockElement);
     if (!binding) {
         return;
@@ -309,6 +378,15 @@ export const updateWysiwygCodeMirrorLanguage = (blockElement: HTMLElement, langu
     applyLanguage(blockElement, binding, languageName);
 };
 
-export const hasWysiwygCodeMirror = (blockElement: HTMLElement) => bindings.has(blockElement);
+/** @deprecated use updateCodeMirrorLanguage */
+export const updateWysiwygCodeMirrorLanguage = updateCodeMirrorLanguage;
 
-export const getWysiwygCodeMirrorView = (blockElement: HTMLElement) => bindings.get(blockElement)?.view;
+export const hasCodeMirror = (blockElement: HTMLElement) => bindings.has(blockElement);
+
+/** @deprecated use hasCodeMirror */
+export const hasWysiwygCodeMirror = hasCodeMirror;
+
+export const getCodeMirrorView = (blockElement: HTMLElement) => bindings.get(blockElement)?.view;
+
+/** @deprecated use getCodeMirrorView */
+export const getWysiwygCodeMirrorView = getCodeMirrorView;

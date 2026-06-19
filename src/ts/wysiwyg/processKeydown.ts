@@ -1,10 +1,10 @@
 import {Constants} from "../constants";
 import {
-    focusWysiwygCodeMirror,
-    getWysiwygCodeMirrorView,
-    hasWysiwygCodeMirror,
-    isInsideWysiwygCodeMirror,
-    isWysiwygCmCodeBlock,
+    focusCodeMirror,
+    getCodeMirrorView,
+    hasCodeMirror,
+    isCmCodeBlock,
+    isInsideCodeMirror,
 } from "../codeBlock/codeMirrorManager";
 import {isCtrl, isFirefox} from "../util/compatibility";
 import {scrollCenter} from "../util/editorCommonEvent";
@@ -41,16 +41,16 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         return false;
     }
 
-    if (isInsideWysiwygCodeMirror(event.target)) {
+    if (isInsideCodeMirror(event.target)) {
         const codeRenderElement = (event.target as HTMLElement).closest("[data-type='code-block']") as HTMLElement;
         if (event.key === "Escape" && codeRenderElement) {
             vditor.wysiwyg.popover.style.display = "none";
-            getWysiwygCodeMirrorView(codeRenderElement)?.contentDOM.blur();
+            getCodeMirrorView(codeRenderElement)?.contentDOM.blur();
             event.preventDefault();
             return true;
         }
         if (!isCtrl(event) && !event.shiftKey && event.altKey && event.key === "Enter" && codeRenderElement) {
-            focusWysiwygCodeMirror(codeRenderElement, false, vditor);
+            focusCodeMirror(codeRenderElement, false, vditor);
             event.preventDefault();
             return true;
         }
@@ -116,8 +116,8 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         // esc: 退出编辑
         if (event.key === "Escape" && codeRenderElement.getAttribute("data-type") === "code-block") {
             vditor.wysiwyg.popover.style.display = "none";
-            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
-                getWysiwygCodeMirrorView(codeRenderElement)?.contentDOM.blur();
+            if (hasCodeMirror(codeRenderElement) || isCmCodeBlock(codeRenderElement)) {
+                getCodeMirrorView(codeRenderElement)?.contentDOM.blur();
                 event.preventDefault();
                 return true;
             }
@@ -132,8 +132,8 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         // alt+enter: 代码块切换到语言 https://github.com/Vanessa219/vditor/issues/54
         if (!isCtrl(event) && !event.shiftKey && event.altKey && event.key === "Enter" &&
             codeRenderElement.getAttribute("data-type") === "code-block") {
-            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
-                focusWysiwygCodeMirror(codeRenderElement, false, vditor);
+            if (hasCodeMirror(codeRenderElement) || isCmCodeBlock(codeRenderElement)) {
+                focusCodeMirror(codeRenderElement, false, vditor);
                 event.preventDefault();
                 return true;
             }
@@ -145,7 +145,7 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
         }
 
         if (codeRenderElement.getAttribute("data-block") === "0") {
-            if (hasWysiwygCodeMirror(codeRenderElement) || isWysiwygCmCodeBlock(codeRenderElement)) {
+            if (hasCodeMirror(codeRenderElement) || isCmCodeBlock(codeRenderElement)) {
                 return false;
             }
             if (fixCodeBlock(vditor, event, codeRenderElement.firstElementChild as HTMLElement, range)) {

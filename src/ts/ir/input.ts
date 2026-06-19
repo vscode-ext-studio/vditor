@@ -8,6 +8,11 @@ import {
 import {hasClosestByTag} from "../util/hasClosestByHeadings";
 import {log} from "../util/log";
 import {processCodeRender} from "../util/processCode";
+import {
+    deactivateAllCodeMirrors,
+    isCmCodeBlock,
+    renderCodeBlocks,
+} from "../codeBlock/codeMirrorManager";
 import {getSelectPosition, setRangeByWbr} from "../util/selection";
 import {renderToc} from "../util/toc";
 import {processAfterRender} from "./process";
@@ -170,6 +175,7 @@ export const input = (vditor: IVditor, range: Range, ignoreSpace = false, event?
     }
 
     log("SpinVditorIRDOM", html, "argument", vditor.options.debugger);
+    deactivateAllCodeMirrors(vditor);
     html = vditor.lute.SpinVditorIRDOM(html);
     log("SpinVditorIRDOM", html, "result", vditor.options.debugger);
 
@@ -226,7 +232,12 @@ export const input = (vditor: IVditor, range: Range, ignoreSpace = false, event?
 
     setRangeByWbr(vditor.ir.element, range);
 
+    renderCodeBlocks(vditor);
+
     vditor.ir.element.querySelectorAll(".vditor-ir__preview[data-render='2']").forEach((item: HTMLElement) => {
+        if (isCmCodeBlock(item.parentElement as HTMLElement)) {
+            return;
+        }
         processCodeRender(item, vditor);
     });
 

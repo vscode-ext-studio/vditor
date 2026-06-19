@@ -1,17 +1,11 @@
-import {
-    focusWysiwygCodeMirror,
-    isSpecialCodeLanguage,
-    isWysiwygCmCodeBlock,
-} from "../codeBlock/codeMirrorManager";
+import {focusCodeBlock, isSpecialCodeLanguage} from "../codeBlock/codeMirrorManager";
 import {scrollCenter} from "../util/editorCommonEvent";
 import {setSelectionFocus} from "../util/selection";
 
 /** 仅用于 mermaid/math 等特殊代码块的编辑/预览切换；普通代码块由 CodeMirror 常驻渲染 */
 export const showCode = (previewElement: HTMLElement, vditor: IVditor, first = true) => {
     const blockElement = previewElement.closest(".vditor-wysiwyg__block") as HTMLElement;
-    if (isWysiwygCmCodeBlock(blockElement)) {
-        focusWysiwygCodeMirror(blockElement, first, vditor);
-        scrollCenter(vditor);
+    if (focusCodeBlock(blockElement, vditor, first)) {
         return;
     }
 
@@ -47,8 +41,7 @@ export const showCode = (previewElement: HTMLElement, vditor: IVditor, first = t
 };
 
 export const focusWysiwygCodeBlock = (blockElement: HTMLElement, vditor: IVditor, first = true) => {
-    if (isWysiwygCmCodeBlock(blockElement)) {
-        focusWysiwygCodeMirror(blockElement, first, vditor);
+    if (focusCodeBlock(blockElement, vditor, first)) {
         scrollCenter(vditor);
         return true;
     }

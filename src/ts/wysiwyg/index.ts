@@ -27,7 +27,7 @@ import {afterRenderEvent} from "./afterRenderEvent";
 import {genImagePopover, genLinkRefPopover, highlightToolbarWYSIWYG} from "./highlightToolbarWYSIWYG";
 import {getRenderElementNextNode, modifyPre} from "./inlineTag";
 import {input} from "./input";
-import {isInsideWysiwygCodeMirror, isWysiwygCmCodeBlock} from "../codeBlock/codeMirrorManager";
+import {focusCodeBlock, isCmCodeBlock, isInsideCodeMirror} from "../codeBlock/codeMirrorManager";
 import {focusWysiwygCodeBlock, showCode} from "./showCode";
 import {getMarkdown} from "../markdown/getMarkdown";
 
@@ -318,7 +318,7 @@ class WYSIWYG {
         });
 
         this.element.addEventListener("compositionend", (event: InputEvent) => {
-            if (isInsideWysiwygCodeMirror(event.target)) {
+            if (isInsideCodeMirror(event.target)) {
                 return;
             }
             const headingElement = hasClosestByHeadings(getSelection().getRangeAt(0).startContainer);
@@ -334,7 +334,7 @@ class WYSIWYG {
         });
 
         this.element.addEventListener("input", (event: InputEvent) => {
-            if (isInsideWysiwygCodeMirror(event.target)) {
+            if (isInsideCodeMirror(event.target)) {
                 return;
             }
             if (event.inputType === "deleteByDrag" || event.inputType === "insertFromDrop") {
@@ -454,7 +454,7 @@ class WYSIWYG {
             highlightToolbarWYSIWYG(vditor);
 
             const cmBlock = (event.target as HTMLElement).closest?.("[data-type='code-block']") as HTMLElement;
-            if (isWysiwygCmCodeBlock(cmBlock)) {
+            if (isCmCodeBlock(cmBlock)) {
                 focusWysiwygCodeBlock(cmBlock, vditor);
                 clickToc(event, vditor);
                 return;
@@ -480,7 +480,7 @@ class WYSIWYG {
             if (event.isComposing || isCtrl(event)) {
                 return;
             }
-            if (isInsideWysiwygCodeMirror(event.target)) {
+            if (isInsideCodeMirror(event.target)) {
                 return;
             }
             // 除 md 处理、cell 内换行、table 添加新行/列、代码块语言切换、block render 换行、跳出/逐层跳出 blockquote、h6 换行、
@@ -531,7 +531,7 @@ class WYSIWYG {
                 return;
             }
             const blockElement = previewElement.closest("[data-type='code-block']") as HTMLElement;
-            if (isWysiwygCmCodeBlock(blockElement)) {
+            if (isCmCodeBlock(blockElement)) {
                 if (event.key === "ArrowDown" || event.key === "ArrowRight") {
                     focusWysiwygCodeBlock(blockElement, vditor, true);
                 } else if (event.key === "ArrowUp" || event.key === "ArrowLeft" || event.key === "Backspace") {

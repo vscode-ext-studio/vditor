@@ -1,4 +1,10 @@
 import {Constants} from "../constants";
+import {
+    focusCodeMirror,
+    getCodeMirrorView,
+    isCmCodeBlock,
+    isInsideCodeMirror,
+} from "../codeBlock/codeMirrorManager";
 import {hidePanel} from "../toolbar/setToolbar";
 import {isCtrl} from "../util/compatibility";
 import {
@@ -28,6 +34,16 @@ import {processAfterRender, processHeading} from "./process";
 export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     vditor.ir.composingLock = event.isComposing;
     if (event.isComposing) {
+        return false;
+    }
+
+    if (isInsideCodeMirror(event.target)) {
+        const codeRenderElement = (event.target as HTMLElement).closest("[data-type='code-block']") as HTMLElement;
+        if (event.key === "Escape" && codeRenderElement) {
+            getCodeMirrorView(codeRenderElement)?.contentDOM.blur();
+            event.preventDefault();
+            return true;
+        }
         return false;
     }
 
@@ -86,6 +102,10 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     // 代码块
     const preRenderElement = hasClosestByClassName(startContainer, "vditor-ir__marker--pre");
     if (preRenderElement && preRenderElement.tagName === "PRE") {
+        const codeBlockElement = preRenderElement.parentElement;
+        if (isCmCodeBlock(codeBlockElement)) {
+            return false;
+        }
         const codeRenderElement = preRenderElement.firstChild as HTMLElement;
         if (fixCodeBlock(vditor, event, preRenderElement, range)) {
             return true;
@@ -106,8 +126,13 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
     const preBeforeElement = hasClosestByAttribute(startContainer, "data-type", "code-block-info");
     if (preBeforeElement) {
         if (event.key === "Enter" || event.key === "Tab") {
-            range.selectNodeContents(preBeforeElement.nextElementSibling.firstChild);
-            range.collapse(true);
+            const codeBlockElement = preBeforeElement.parentElement;
+            if (isCmCodeBlock(codeBlockElement)) {
+                focusCodeMirror(codeBlockElement, true, vditor);
+            } else {
+                range.selectNodeContents(preBeforeElement.nextElementSibling.firstChild);
+                range.collapse(true);
+            }
             event.preventDefault();
             hidePanel(vditor, ["hint"]);
             return true;
@@ -191,10 +216,14 @@ export const processKeydown = (vditor: IVditor, event: KeyboardEvent) => {
                 blockElement.previousElementSibling.getAttribute("data-type") === "math-block")) {
             const rangeStart = getSelectPosition(blockElement, vditor.ir.element, range).start;
             if (rangeStart === 0 || (rangeStart === 1 && blockElement.innerText.startsWith(Constants.ZWSP))) {
-                // 当前块删除后光标落于代码渲染块上，当前块会被删除，因此需要阻止事件，不能和 keyup 中的代码块处理合并
-                range.selectNodeContents(blockElement.previousElementSibling.querySelector(".vditor-ir__marker--pre code"));
-                range.collapse(false);
-                expandMarker(range, vditor);
+                const prevBlock = blockElement.previousElementSibling as HTMLElement;
+                if (isCmCodeBlock(prevBlock)) {
+                    focusCodeMirror(prevBlock, false, vditor);
+                } else {
+                    range.selectNodeContents(prevBlock.querySelector(".vditor-ir__marker--pre code"));
+                    range.collapse(false);
+                    expandMarker(range, vditor);
+                }
                 if (blockElement.textContent.trim().replace(Constants.ZWSP, "") === "") {
                     // 当前块为空且不是最后一个时，需要删除
                     blockElement.remove();

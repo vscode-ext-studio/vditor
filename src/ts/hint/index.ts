@@ -5,7 +5,7 @@ import {isCtrl} from "../util/compatibility";
 import {execAfterRender} from "../util/fixBrowserBehavior";
 import {hasClosestByAttribute, hasClosestByClassName} from "../util/hasClosest";
 import {processCodeRender} from "../util/processCode";
-import {isWysiwygCmCodeBlock, updateWysiwygCodeMirrorLanguage} from "../codeBlock/codeMirrorManager";
+import {isCmCodeBlock, updateCodeMirrorLanguage} from "../codeBlock/codeMirrorManager";
 import {getCursorPosition, insertHTML, setSelectionFocus} from "../util/selection";
 
 export class Hint {
@@ -193,19 +193,24 @@ ${i === 0 ? "class='vditor-hint--current'" : ""}> ${html}</button>`;
         if (vditor.currentMode === "wysiwyg") {
             const preElement = hasClosestByClassName(range.startContainer, "vditor-wysiwyg__block");
             if (preElement && preElement.getAttribute("data-type") === "code-block") {
-                if (isWysiwygCmCodeBlock(preElement)) {
-                    updateWysiwygCodeMirrorLanguage(preElement, value.trimRight());
+                if (isCmCodeBlock(preElement)) {
+                    updateCodeMirrorLanguage(preElement, value.trimRight());
                 } else if (preElement.lastElementChild.classList.contains("vditor-wysiwyg__preview")) {
                     preElement.lastElementChild.innerHTML = preElement.firstElementChild.innerHTML;
                     processCodeRender(preElement.lastElementChild as HTMLElement, vditor);
-                    updateWysiwygCodeMirrorLanguage(preElement, value.trimRight());
+                    updateCodeMirrorLanguage(preElement, value.trimRight());
                 }
             }
         } else if (vditor.currentMode === "ir") {
-            const preElement = hasClosestByClassName(range.startContainer, "vditor-ir__marker--pre");
-            if (preElement && preElement.nextElementSibling.classList.contains("vditor-ir__preview")) {
-                preElement.nextElementSibling.innerHTML = preElement.innerHTML;
-                processCodeRender(preElement.nextElementSibling as HTMLElement, vditor);
+            const codeBlockElement = hasClosestByAttribute(range.startContainer, "data-type", "code-block");
+            if (codeBlockElement && isCmCodeBlock(codeBlockElement)) {
+                updateCodeMirrorLanguage(codeBlockElement, value.trimRight());
+            } else {
+                const preElement = hasClosestByClassName(range.startContainer, "vditor-ir__marker--pre");
+                if (preElement && preElement.nextElementSibling.classList.contains("vditor-ir__preview")) {
+                    preElement.nextElementSibling.innerHTML = preElement.innerHTML;
+                    processCodeRender(preElement.nextElementSibling as HTMLElement, vditor);
+                }
             }
         }
         execAfterRender(vditor);

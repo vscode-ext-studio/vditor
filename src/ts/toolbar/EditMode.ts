@@ -9,6 +9,7 @@ import {highlightToolbar} from "../util/highlightToolbar";
 import {processCodeRender} from "../util/processCode";
 import {renderToc} from "../util/toc";
 import {renderDomByMd} from "../wysiwyg/renderDomByMd";
+import {renderCodeBlocks} from "../codeBlock/codeMirrorManager";
 import {MenuItem} from "./MenuItem";
 import {
     disableToolbar,
@@ -68,6 +69,7 @@ export const setEditMode = (vditor: IVditor, type: string, event: Event | string
         vditor.ir.element.querySelectorAll(".vditor-ir__preview[data-render='2']").forEach((item: HTMLElement) => {
             processCodeRender(item, vditor);
         });
+        renderCodeBlocks(vditor);
         vditor.ir.element.querySelectorAll(".vditor-toc").forEach((item: HTMLElement) => {
             mathRender(item, {
                 cdn: vditor.options.cdn,
